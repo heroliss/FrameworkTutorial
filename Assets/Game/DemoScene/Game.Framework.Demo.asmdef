@@ -5,11 +5,7 @@
         "Game.Framework",
         "R3",
         "R3.Unity",
-        "UniTask",
-        "Unity.TextMeshPro",
-        "UnityEngine.UI",
-        "Sirenix.OdinInspector.Attributes",
-        "Sirenix.Serialization"
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
