@@ -112,7 +112,7 @@ namespace Game.Framework.Demo.Modules
                 referenceResult.text = "资源 handle 已释放，预览引用也已清空；可再次 Get。";
             }, CodeRef.Here("refs.LogoList.UnloadAll()", "统一释放引用列表"));
             host.AddNote("`DemoAssetRefs` 使用 `MonoUtilityBase`，因为它是“把 Unity 序列化配置接到 Context”的基础设施 Adapter，不是业务 Model。基类在 Awake 把字段绑定到同一 Context 的 `IAssetUtility` 并登记进自己的 Bag；组件销毁时统一释放。章节也从当前 Context 解析它，避免全局对象扫描在多场景时串作用域。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoAssetRefs.cs", "class DemoAssetRefs", "场景资源引用 Adapter"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/DemoAssetRefs.cs", "class DemoAssetRefs", "场景资源引用 Adapter"));
 #if UNITY_EDITOR
             host.AddActionRow("定位 DemoAssetRefs 场景节点", () => DemoEditorNav.PingSceneObject(refs.gameObject));
 #endif
@@ -201,11 +201,11 @@ namespace Game.Framework.Demo.Modules
                 configResult.text = "配置 handle 与已绑定的内部引用已一起释放；可从步骤①重测。";
             }, CodeRef.Here("configBag.Dispose()", "统一释放配置和内部引用"));
             host.AddNote("ScriptableObject 是可共享、可异步加载的数据资产，不会经历 `MonoLayerBase.Awake`，框架也不会递归猜测谁拥有它。由真正的持有者调用 `Bag.BindAssetReferences(config)`，就同时回答了“用哪个资源系统加载”和“何时释放”两个问题。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoAssetConfig.cs", "class DemoAssetConfig", "SO 引用配置示例"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/DemoAssetConfig.cs", "class DemoAssetConfig", "SO 引用配置示例"));
             host.AddCaution("“SO 可共享”不等于“同一个嵌套 AssetReference 可有多个 owner”。Bind 会写入加载器与宿主 token，任一 owner Dispose 也会释放同一 handle；多个 Context 同时使用时应各自 Instantiate / clone 一份配置，或由一个明确的长寿命 owner 独占并向外提供只读结果。");
 #if UNITY_EDITOR
             host.AddActionRow("定位 DemoAssetConfig 资产", () =>
-                DemoEditorNav.PingAsset("Assets/Game/Framework/Demo/Res/DemoAssetConfig.asset"));
+                DemoEditorNav.PingAsset("Assets/Game/DemoScene/Res/DemoAssetConfig.asset"));
 #endif
 
             // ── 4. 选择指南 ──
@@ -232,3 +232,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

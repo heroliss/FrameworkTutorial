@@ -35,8 +35,8 @@ namespace Game.Framework.Demo.PlayMode.Tests
 
         private static readonly string[] AssetPaths =
         {
-            "Assets/Game/Framework/Demo/Res/Fonts/DemoLatin SDF.asset",
-            "Assets/Game/Framework/Demo/Res/Fonts/DemoNotoSansSC SDF.asset",
+            "Assets/Game/DemoScene/Res/Fonts/DemoLatin SDF.asset",
+            "Assets/Game/DemoScene/Res/Fonts/DemoNotoSansSC SDF.asset",
         };
 
         private static double _editorReadySince = -1d;
@@ -356,3 +356,4 @@ namespace Game.Framework.Demo.PlayMode.Tests
     }
 }
 #endif
+

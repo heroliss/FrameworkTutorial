@@ -12,7 +12,7 @@ namespace Game.Framework.Demo.Modules
     /// </summary>
     public sealed class ServiceInstallerDemoModule : DemoModuleBase
     {
-        private const string Dir = "Assets/Game/Framework/Demo/Scripts/Modules/ServiceInstaller";
+        private const string Dir = "Assets/Game/DemoScene/Scripts/Modules/ServiceInstaller";
 
         public override string Id => "service-installer";
         public override string Title => "服务注册生成 · 安装器";
@@ -90,3 +90,4 @@ namespace Game.Framework.Demo.Modules
         public string Execute(ICommandContext ctx) => ctx.GetSystem<Services.IDemoExcludedService>().Describe();
     }
 }
+

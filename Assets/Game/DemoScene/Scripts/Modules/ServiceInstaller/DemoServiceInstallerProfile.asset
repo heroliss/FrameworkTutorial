@@ -15,5 +15,6 @@ MonoBehaviour:
   Installers:
   - ScanFolders:
     - {fileID: 102900000, guid: 61f69f5b4c4b0d243b6b8c71f93d0155, type: 3}
-    OutputPath: Assets/Game/Framework/Demo/Scripts/Modules/ServiceInstaller/Generated/DemoServicesInstaller.g.cs
+    OutputPath: Assets/Game/DemoScene/Scripts/Modules/ServiceInstaller/Generated/DemoServicesInstaller.g.cs
     Namespace: Game.Framework.Demo.Modules.Generated
+

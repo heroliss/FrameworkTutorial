@@ -22,7 +22,7 @@ namespace Game.Framework.Demo.Tests
                 host.AddConcept("Adapter", "可替换的具体实现。");
                 host.AddSectionTitle("适用边界");
                 host.AddNote("只有存在替换或隔离价值时才引入 Seam。",
-                    new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/IDemoModule.cs", "interface IDemoModule"));
+                    new CodeRef("Assets/Game/DemoScene/Scripts/Core/IDemoModule.cs", "interface IDemoModule"));
             });
 
             Assert.DoesNotThrow(() => ActivateOnce(module));
@@ -53,7 +53,7 @@ namespace Game.Framework.Demo.Tests
                     "缺少场景 Adapter。",
                     "把 Adapter 挂进根 Context 子树。",
                     "先阅读概念章，恢复后再回来操作。",
-                    new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext")));
+                    new CodeRef("Assets/Game/DemoScene/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext")));
 
             Assert.DoesNotThrow(() => ActivateOnce(module));
         }
@@ -66,7 +66,7 @@ namespace Game.Framework.Demo.Tests
                     "缺少场景 Adapter。",
                     " ",
                     "恢复后再回来。",
-                    new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext")));
+                    new CodeRef("Assets/Game/DemoScene/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext")));
 
             var error = Assert.Throws<InvalidOperationException>(() => ActivateOnce(module));
             StringAssert.Contains("恢复方式", error.Message);
@@ -81,7 +81,7 @@ namespace Game.Framework.Demo.Tests
                     "缺少场景 Adapter。",
                     "把 Adapter 挂进根 Context 子树。",
                     "恢复后再回来。",
-                    new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext"));
+                    new CodeRef("Assets/Game/DemoScene/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext"));
                 host.AddActionRow("这个按钮不应出现在降级页", () => { });
             });
 
@@ -236,3 +236,4 @@ namespace Game.Framework.Demo.Tests
         }
     }
 }
+

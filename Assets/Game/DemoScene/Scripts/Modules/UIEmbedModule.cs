@@ -22,10 +22,10 @@ namespace Game.Framework.Demo.Modules
             "RenderTexture Bridge 把活的 UGUI/TMP 嵌进 UI Toolkit 内容流，因此能随 ScrollView 裁剪和滚动。" +
             "可选输入转发支持点击、悬停、拖拽和滚轮。";
 
-        private const string PanelFile = "Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoUGuiEmbedPanel.cs";
-        private const string InteractivePanelFile = "Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoUGuiInteractivePanel.cs";
-        private const string BridgeFile = "Assets/Game/Framework/UI.Bridge/MonoUGuiEmbed.cs";
-        private const string ForwarderFile = "Assets/Game/Framework/UI.Bridge/UGuiEmbedInputForwarder.cs";
+        private const string PanelFile = "Assets/Game/DemoScene/Scripts/Modules/Support/DemoUGuiEmbedPanel.cs";
+        private const string InteractivePanelFile = "Assets/Game/DemoScene/Scripts/Modules/Support/DemoUGuiInteractivePanel.cs";
+        private const string BridgeFile = "Packages/com.heroliss.ssframework/src/UI.Bridge/MonoUGuiEmbed.cs";
+        private const string ForwarderFile = "Packages/com.heroliss.ssframework/src/UI.Bridge/UGuiEmbedInputForwarder.cs";
 
         public override void Build(DemoModuleHost host)
         {
@@ -64,7 +64,7 @@ namespace Game.Framework.Demo.Modules
                     new CodeRef(BridgeFile, "class MonoUGuiEmbed", "MonoUGuiEmbed · 框架组件"));
                 int normalTextureBudget = dview.MaxTextureSize;
                 host.AddSubNote("`MaxTextureSize` 是**最长边画质预算**，不是 UGUI 的逻辑布局尺寸：纹理宽高统一降采样，托管 `CanvasScaler` 仍以 Toolkit 内容框排版。调低后只会变糊，宽高比、字体和控件构图都应保持。可用下面两个按钮现场对比。",
-                    new CodeRef("Assets/Game/Framework/UI.Toolkit/RenderTextureElement.cs", "public int MaxTextureSize", "低清等比降采样实现"));
+                    new CodeRef("Packages/com.heroliss.ssframework/src/UI.Toolkit/RenderTextureElement.cs", "public int MaxTextureSize", "低清等比降采样实现"));
                 host.AddActionRow("切到 128px 低清（应变糊但不变形）", () => dview.MaxTextureSize = 128);
                 host.AddActionRow("恢复正常纹理预算", () => dview.MaxTextureSize = normalTextureBudget);
 #if UNITY_EDITOR
@@ -123,3 +123,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

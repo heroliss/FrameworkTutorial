@@ -75,9 +75,9 @@ namespace Game.Framework.Demo.Modules
             host.AddSectionTitle("核心层对 UI 技术无感");
             host.AddNote("这张卡片读写的分数，和「界面（View）· MonoViewBase」(UGUI) 章是**同一个** `MonoScoreModel`、同一对查询/写命令。切到那一章，分数一致——证明 Model / Command / System 根本不知道上层用的是 UGUI 还是 UI Toolkit。");
             host.AddSubNote("这里的“同一个”特指 demo **根 Context** 下的 `ChapterAssets/ScoreModel`；`ScoreModel (Sub)` 是「多上下文（Context）· 作用域树」章用于演示子级覆盖的另一份独立状态，不应与根分数同步。");
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "MonoScoreModel · 共用状态"));
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/ModelReactiveModule.cs", "struct GetMonoScoreCommand", "只读查询 Command"));
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/ModelReactiveModule.cs", "struct RaiseMonoScoreCommand", "写操作 Command"));
+            host.AddCodeLink(new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "MonoScoreModel · 共用状态"));
+            host.AddCodeLink(new CodeRef("Assets/Game/DemoScene/Scripts/Modules/ModelReactiveModule.cs", "struct GetMonoScoreCommand", "只读查询 Command"));
+            host.AddCodeLink(new CodeRef("Assets/Game/DemoScene/Scripts/Modules/ModelReactiveModule.cs", "struct RaiseMonoScoreCommand", "写操作 Command"));
 #if UNITY_EDITOR
             host.AddActionRow("选中根作用域的共享 ScoreModel（Inspector 看值跳变）", () =>
             {
@@ -159,3 +159,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

@@ -30,7 +30,7 @@ namespace Game.Framework.Demo.Modules
             // ── 动手试 ──
             host.AddSectionTitle("动手试：打开面板，边玩 demo 边看");
             host.AddActionRow("打开框架诊断面板", () => DemoEditorNav.OpenMenu(PanelMenu),
-                new CodeRef("Assets/Game/Framework/Editor/FrameworkDiagnosticsWindow.cs", "class FrameworkDiagnosticsWindow", "面板实现（EditorWindow）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Editor/FrameworkDiagnosticsWindow.cs", "class FrameworkDiagnosticsWindow", "面板实现（EditorWindow）"));
             host.AddNote("打开后回 demo 随便点几个按钮再看面板——三块区域都能和前面的章节对上号：");
             host.AddStep("①", "**Context 树（左）**：能找到 demo 根 Context 和「多上下文（Context）」章的 SubContext——作用域树在这里成像，双击 Mono 节点直接定位场景对象。`可→Main` 只表示允许兜底；真正命中过 Main 后才变成警示色 `→Main ×N`。去「游戏流程」章 `GoTo` 几个阶段，还能看到状态子 Context 随进入出现、随切走消失——「整棵撤」的直观证据。");
             host.AddStep("②", "**注册与回退明细（右）**：选中 demo 根 Context——各章 `InstallBindings` 注册的纯 C# 层（`CounterModel`、`IPoolUtility`…）全在注册表里（契约 → 实例，工厂项**不触发构造**、观察不改变系统）；有真实父链 / Main 命中时，“解析回退”会列出契约、最终来源和 Resolve 次数。");
@@ -38,18 +38,18 @@ namespace Game.Framework.Demo.Modules
             host.AddConcept("策略与证据", "`可→Main` 是 Context 能力，不是已经发生；`→Main ×N` 才表示实际成功解析。失败 TryResolve、HasBinding 和面板只读观察都不计数。");
             host.AddConcept("解析次数", "N 表示 Resolve 次数，不是业务使用次数或静态依赖图；缓存后的服务被反复调用不会反复增长。");
             host.AddNote("流水是 **opt-in** 的：来自 `LoggingCommandSystem`——`ICommandSystem` 的**装饰器**（「命令分发可替换」的现成活样板），根 Context 注册它替换默认 `CommandSystem` 即得；泛型直转发、struct 路径保持零装箱、异常照原样冒出，不改任何执行语义。demo 根 Context 已这样注册：",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/MonoDemoContext.cs", "new LoggingCommandSystem()", "demo 的接入（一行替换注册）"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Core/MonoDemoContext.cs", "new LoggingCommandSystem()", "demo 的接入（一行替换注册）"));
 
             // ── 初始化问题 ──
             host.AddSectionTitle("看到多个 Mono 初始化问题，先别按数量猜 bug");
             host.AddNote("子 Context 初始化时会先确保父 Context 已完成。若根 Context 的 `InstallBindings` 抛错，根、子、孙三层都可能失败——窗口会显示 **1 个根因、影响 3 个 Context**，而不是把同一故障冒充三处独立 bug。先定位每组的“最先失败对象”，再展开受影响链确认传播范围。",
-                new CodeRef("Assets/Game/Framework/Editor/MonoContextIssueAnalysis.cs", "class MonoContextIssueAnalysis", "父子级联的只读聚合模型"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Editor/MonoContextIssueAnalysis.cs", "class MonoContextIssueAnalysis", "父子级联的只读聚合模型"));
             host.AddConcept("当前 Play", "故障正在影响这次运行，需要处理；首要根因卡使用 Error 语义。");
             host.AddConcept("历史证据", "已经退出 Play，只是保留上次失败供定位 / 复制，不表示当前仍在执行坏逻辑；场景重载后会重建。若项目关闭了 Scene Reload，先手动重载场景再复测。");
             host.AddConcept("时序提醒", "激活对象还停在 `Uninitialized/Initializing`，但尚未抛异常，所以不计入根因数。只短暂出现一帧通常无碍；持续存在再从“最上游未就绪”检查激活状态与 `Awake` 时序。");
             host.AddConcept("复制整组诊断", "一次带出最先失败对象、受影响链、父级和完整根因堆栈；贴 issue 或交给 AI 时不要重复复制多份级联异常。");
             host.AddSubNote("Edit Mode 里普通 `Uninitialized` 很正常：MonoBehaviour 还没执行 `Awake`。只有 Play 中激活对象持续没初始化，或状态明确为 `Failed`，面板才把它列为问题。当前 DemoScene 正常运行时三套 Context 都应为 Ready。",
-                new CodeRef("Assets/Game/Framework/Editor/FrameworkDiagnosticsWindow.cs", "ShouldReportMonoIssue", "什么状态才需要报告"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Editor/FrameworkDiagnosticsWindow.cs", "ShouldReportMonoIssue", "什么状态才需要报告"));
 
             // ── 泄漏排查 ──
             host.AddSectionTitle("泄漏排查三板斧");
@@ -66,3 +66,4 @@ namespace Game.Framework.Demo.Modules
 
     }
 }
+

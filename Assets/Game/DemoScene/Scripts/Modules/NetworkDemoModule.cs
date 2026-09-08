@@ -76,9 +76,9 @@ namespace Game.Framework.Demo.Modules
             // ── 定位 ──
             host.AddPositioning("消息建模双轨");
             host.AddNote("网络消息分两类，用两种最贴合因果的形态建模：**请求-响应**（发起方等结果）= `await http.Post<Req,Resp>(...)` **UniTask 返回值**，不硬塞进事件；**服务器推送/广播**（谁都可能收到）= 转框架 **Event**，`Bag.Subscribe<T>` 消费，与订 Model 事件同一套心智。",
-                new CodeRef("Assets/Game/Framework/Core/Network/IHttpUtility.cs", "public interface IHttpUtility", "HTTP 门面契约"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Network/IHttpUtility.cs", "public interface IHttpUtility", "HTTP 门面契约"));
             host.AddSubNote("传输与序列化是两个接缝：默认 HTTP=UnityWebRequest（全平台含 WebGL）、WS=ClientWebSocket、格式=JSON；换 BestHTTP / Protobuf / MemoryPack 只换 provider / serializer，业务零改动。本章服务器是内嵌离线的（HTTP 用 HttpListener、WS 用 TcpListener + 手写 RFC6455——Mono 的 HttpListener 做不了 WS 服务端），点按钮即可跑通、无需外部后端。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Services/DemoGameServer.cs", "class DemoGameServer", "内嵌演示服务器"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Services/DemoGameServer.cs", "class DemoGameServer", "内嵌演示服务器"));
 
             // ── 服务器状态 ──
             host.AddSectionTitle("内嵌服务器");
@@ -143,7 +143,7 @@ namespace Game.Framework.Demo.Modules
                 httpLabel.text = "已设置 Authorization 默认头 ✓ 之后每个请求都自动带上（典型 auth 姿势）。";
             }, CodeRef.Here("http.SetHeader(\"Authorization\"", "默认头"));
             host.AddSubNote("`baseUrl` 会在 `HttpUtility` 构造时验证为带 host、无 userinfo / query / fragment 的绝对 `http(s)` 地址；Method、URL 与 Header 也会在进入 Provider 前校验。某个公开端点不应携带全局 Authorization 时，可在该次 `HttpRequest.Headers` 中写 `[\"Authorization\"] = null`：只移除本次合并快照，不会改掉后续请求的默认头。",
-                new CodeRef("Assets/Game/Framework/Core/Network/HttpMessages.cs", "public Dictionary<string, string> Headers", "每请求头与临时移除语义"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Network/HttpMessages.cs", "public Dictionary<string, string> Headers", "每请求头与临时移除语义"));
 
             host.AddAsyncActionRow("GET /api/leaderboard?count=3（需 token，缺则 401）", async ct =>
             {
@@ -258,7 +258,7 @@ namespace Game.Framework.Demo.Modules
             host.AddConcept("一次 Connect = 一个内部 Connection Session",
                 "每次成功连接独占接收 token、发送 token、FIFO 队尾和一次关闭事件发布权。旧连接的接收异常或排队帧即使迟到，也只能结束旧 session，不会覆盖新 State 或写进新 socket；这是框架藏在门面后的并发正确性。");
             host.AddSubNote("`State=Disconnected` 表示业务已不可再用，不等于违规 Adapter 中忽略取消的旧 Receive 已经物理返回。若此时立刻 Connect，框架会等待旧发送与 Close owner 清场；每个 Provider 方法还会固定入口 socket，所以迟到接收无权碰新 session。不额外暴露 Disconnecting，换来更小的业务状态机。每个成功 session 至多一个 ClosedEvent；Context Dispose 是整棵拆除，不发事件，但会完结已取得的 State，旧 Utility 引用重新取 State 则抛 ODE。Disconnect 仍是幂等清理 no-op。",
-                new CodeRef("Assets/Game/Framework/Core/Network/IWebSocketUtility.cs", "public interface IWebSocketUtility", "连接门面契约"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Network/IWebSocketUtility.cs", "public interface IWebSocketUtility", "连接门面契约"));
             host.AddSubNote("取消边界：Disconnect 入口 token 已取消 = 不提交断开；关闭开始后才取消 = session 仍清理并发 `ByUser:true`，调用方随后收到 OCE。取消的是优雅握手等待，不是把已经发生的断开倒回去。");
             host.AddSubNote("传输层在 token 未取消时自己抛 OCE，不算业务取消：Connect 按 ConnectionError，Close 只算 best-effort 握手失败，Receive / Send 则结束 current session 并发 `ByUser:false`。尤其发送失败不能只等接收循环以后也出错，否则 UI 可能永久看到假 Connected。");
             host.AddSubNote("并发边界再深一层：Provider 的 Connect 成功返回就是物理 ownership 提交点，普通 caller 取消与完成同时发生时允许成功赢，避免留下无人拥有的 socket；但 Connecting-Disconnect 已先成立时会在发布 Connected 前 Abort，业务看不到短暂可收发窗口。意外断线后的 Close 没有 caller token，所以框架内部限时 1 秒，坏握手不能永久挡住 ClosedEvent 与重连。自定义 Provider 必须尊重 token，并实现可重连的立即 Abort。");
@@ -270,3 +270,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

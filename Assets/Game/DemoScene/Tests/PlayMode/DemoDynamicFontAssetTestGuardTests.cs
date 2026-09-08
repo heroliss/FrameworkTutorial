@@ -10,7 +10,7 @@ namespace Game.Framework.Demo.PlayMode.Tests
     public sealed class DemoDynamicFontAssetTestGuardTests
     {
         private const string FontAssetPath =
-            "Assets/Game/Framework/Demo/Res/Fonts/DemoLatin SDF.asset";
+            "Assets/Game/DemoScene/Res/Fonts/DemoLatin SDF.asset";
 
         [Test]
         public void Capture_PreExistingDirtySubAsset_FailsBeforeUserChangesCanBeDiscarded()
@@ -37,3 +37,4 @@ namespace Game.Framework.Demo.PlayMode.Tests
     }
 }
 #endif
+

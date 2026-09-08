@@ -34,7 +34,7 @@ namespace Game.Framework.Demo.Modules
         private const string Zh = "zh-CN";
         private const string En = "en";
 
-        private const string L10NDataDir = "Assets/Game/Framework/Demo/Configs~/Datas";
+        private const string L10NDataDir = "Assets/Game/DemoScene/Configs~/Datas";
 
         /// <summary>
         /// 注册路径：文本源要吃配置表服务（另一个 Utility）——用 <c>RegisterOwnedFactory</c> 让容器解决依赖顺序：
@@ -119,7 +119,7 @@ namespace Game.Framework.Demo.Modules
             // ── 定位 ──
             host.AddPositioning("语言状态、文本查询、内容失效各管一件事");
             host.AddNote("框架把 `Locale`（语言身份）、`Lookup`（Found / Missing / Unavailable）与 `TextRevision`（文本应重取）分开；语言列表、`SystemLanguage` 映射和选择持久化仍归业务。",
-                new CodeRef("Assets/Game/Framework/Core/Localization/ILocalizationUtility.cs", "public interface ILocalizationUtility", "本地化入口契约"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Localization/ILocalizationUtility.cs", "public interface ILocalizationUtility", "本地化入口契约"));
             host.AddSubNote("locale code 是开放字符串 + 业务常量（本章 `Zh = \"zh-CN\"` / `En = \"en\"`）。其他多语言方案也能当源接入；原则只有一条：**别让两个系统都认为自己管着当前语言**。文本 UI 订 `TextRevision`，字体和按语言换图/音频仍只订 `Locale`，避免源就绪时无谓重载资源。");
             host.AddSubNote("生命周期上，`ILocalizationUtility` 是当前 Context 的借用能力：Context 释放会完结已经取得的 `Locale` / `TextRevision` 流，此后旧引用的查询和切换都会明确抛 `ObjectDisposedException`。原因是 `Get` 仍要调用只保证同寿的 Source；进入新作用域应重新解析，不要把旧服务缓存成全局静态。");
 
@@ -246,3 +246,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

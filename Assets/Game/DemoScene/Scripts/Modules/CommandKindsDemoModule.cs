@@ -33,7 +33,7 @@ namespace Game.Framework.Demo.Modules
 
             host.AddSectionTitle("为什么 View 不直接调用 System");
             host.AddNote("Command 把所有外部意图收口到一个可观察接缝，日志、测试替身、回放、取消和权限检查都能在这里获得高杠杆，而 View 不必知道逻辑实现。",
-                new CodeRef("Assets/Game/Framework/Core/Systems/ICommandSystem.cs", "interface ICommandSystem", "ICommandSystem · 可替换命令分发器接缝"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Systems/ICommandSystem.cs", "interface ICommandSystem", "ICommandSystem · 可替换命令分发器接缝"));
             host.AddSubNote("代价是多一个小类型。简单操作让 `readonly struct Command` 直接改 Model 即可；规则复用或多步协调时再委托给 System，不需要为了一行赋值强造厚 System。");
 
             // ── 异步（带取消）──
@@ -162,3 +162,4 @@ namespace Game.Framework.Demo.Modules
         public int Execute(ICommandContext ctx) => ctx.GetModel<TaskModel>().Done.CurrentValue;
     }
 }
+

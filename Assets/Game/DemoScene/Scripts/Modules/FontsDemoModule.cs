@@ -35,7 +35,7 @@ namespace Game.Framework.Demo.Modules
         private const string SampleZh = "你好，世界——中文字形演示 ①②③";
 
         // demo 是 UNITY_EDITOR 程序集（教学定位），字体资产直接按路径取；真实业务经 Inspector 拖拽在组件上配置。
-        private const string ToolkitMainPath = "Assets/Game/Framework/Demo/Res/Fonts/DemoLatin SDF.asset";
+        private const string ToolkitMainPath = "Assets/Game/DemoScene/Res/Fonts/DemoLatin SDF.asset";
         private const string TmpMainPath = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
         private const string LatinTtfPath = "Assets/TextMesh Pro/Fonts/LiberationSans.ttf";
 
@@ -290,3 +290,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

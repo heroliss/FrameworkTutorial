@@ -28,7 +28,7 @@ namespace Game.Framework.Demo.Modules
             // ── 三步 ──
             host.AddSectionTitle("三步搭起骨架");
             host.AddStep("①", "**全局根**：主场景根建一个节点（如 `MainContext`），挂你的 `MonoGlobalContext` 子类。它 Awake 自动做三件事：设 `GameContext.Main`、`DontDestroyOnLoad` 跨场景保留、检测重复实例。覆写 `InstallBindings` 注册跨场景的纯 C# 服务（命令分发器 / 音频 / 存储…）。",
-                new CodeRef("Assets/Game/Framework/Core/Context/MonoGlobalContext.cs", "class MonoGlobalContext", "MonoGlobalContext · 业务继承点"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Context/MonoGlobalContext.cs", "class MonoGlobalContext", "MonoGlobalContext · 业务继承点"));
             host.AddStep("②", "**功能层**：两条路进容器——Mono 路径把 `MonoModelBase` / `MonoSystemBase` / `MonoUtilityBase` 子类挂在 Context 子树下（Awake 自动注册 + Inspector 可视）；纯 C# 路径在 `InstallBindings` 里注册（可热更、可单测）。两条路怎么选见「数据模型（Model）· 状态与 Inspector」章。");
             host.AddStep("③", "**View**：`MonoViewBase` 子类挂进（或运行时 Instantiate 进）Context 子树，`Awake` 里订阅查询 Command 刷 UI、按钮点击发 Command——写法就是「最小闭环」那一圈，界面复杂后再引入「UI 框架」章的窗口调度。");
             host.AddNote("五层各一段、完整可抄的最小代码在 `docs/framework-guide.md` §3「快速开始」（Context / Model / System / Command / View 串成一圈）；目录与程序集怎么摆见 §26「推荐项目结构」。");
@@ -37,7 +37,7 @@ namespace Game.Framework.Demo.Modules
             // ── demo 即样板 ──
             host.AddSectionTitle("demo 场景自身就是一份接入样板");
             host.AddNote("本 demo 场景就是按这套骨架搭的：根节点挂 `MonoDemoContext` 承载共享 Context（`InstallBindings` 注册公共服务 + 各章的纯 C# 层），各章的 Mono 层挂在它子树下自动注册，外壳与各章模块扮演 View 角色。点下面按钮去 Hierarchy 看真实结构。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext", "MonoDemoContext · demo 的根 Context"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext", "MonoDemoContext · demo 的根 Context"));
 #if UNITY_EDITOR
             host.AddActionRow("选中 demo 根 Context 节点（Main Context）", () =>
             {
@@ -66,3 +66,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

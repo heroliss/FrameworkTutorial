@@ -101,11 +101,11 @@ namespace Game.Framework.Demo.Modules
             host.AddStep("③", "工作台的“启动本地 CDN 服务”只是启动静态文件服务器，不用因每次资源发布重启——下一个来拉 `.version` 的客户端自然读到新值。");
             host.AddStep("④", "重进 Play：客户端 `Initialize` 拉到新版本号 → 加载新版本清单 → 与本地缓存比对出缺口，进入下方客户端流程。");
             host.AddNote("「版本切换」没有任何魔法：CDN 上 `<包>.version` 的内容变了而已。bundle 文件名带哈希、新旧版本**共存**在 CDN 上，所以旧客户端继续用旧清单不受影响、可以灰度/回滚（把 `.version` 改回旧值就是回滚）；清理 CDN 上过老的版本由运维策略决定（本地构建器默认保留最近几个版本）。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/FrameworkAssetBuilder.cs", "private static void CleanupOldVersions(", "旧版本清理策略"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/FrameworkAssetBuilder.cs", "private static void CleanupOldVersions(", "旧版本清理策略"));
 #if UNITY_EDITOR
             host.AddActionRow("打开本地 CDN 部署目录（看 <包>.version 文件）", () =>
                 UnityEditor.EditorUtility.RevealInFinder(AssetBuildLayout.DeployRoot),
-                new CodeRef("Assets/Game/Framework/Core/Asset/AssetBuildLayout.cs", "DeployRoot", "部署目录（单一真源）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Asset/AssetBuildLayout.cs", "DeployRoot", "部署目录（单一真源）"));
 #endif
 
             // ── 客户端侧：启动更新流程 ──
@@ -345,3 +345,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

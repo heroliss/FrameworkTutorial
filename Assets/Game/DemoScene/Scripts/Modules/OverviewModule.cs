@@ -25,7 +25,7 @@ namespace Game.Framework.Demo.Modules
         {
             host.AddPositioning("先建立全局地图，再进入具体能力");
             host.AddNote("SSFramework 是一套面向 Unity 的游戏框架：用分层、受限接口和统一生命周期，让依赖方向清楚、状态变化可追踪。",
-                new CodeRef("Assets/Game/Framework/Core/Internal/IGameContext.cs", "interface IGameContext", "IGameContext · 能力面"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Internal/IGameContext.cs", "interface IGameContext", "IGameContext · 能力面"));
             host.AddSubNote("它不追求替你决定所有业务结构，而是把常见边界做成低摩擦默认值；小项目会多一点类型和 Command，大项目则换来更稳定的导航、测试与自动化接缝。");
             host.AddNote("这个 demo 本身就是用框架写的：每个章节（包括本页）都扮演框架里的“View 角色”在调用真实 API——" +
                          "所以你看到的演示就是真实手感。动作旁的“查看源码”按钮能直接跳进对应的框架 / 示例代码。");
@@ -38,11 +38,11 @@ namespace Game.Framework.Demo.Modules
             host.AddConcept("数据层（Model）", "持有响应式状态（值一变就自动通知订阅者）。配套的 Event 总线做一对多广播——Model 与 Event 都是“被动数据”，只被读取 / 订阅，不主动调别人。");
             host.AddConcept("基础设施层（Utility）", "承载与具体玩法无关的共享能力：既可以是无状态纯函数，也可以是资源、对象池、存储等有生命周期的服务；可持有基础设施状态，但不持有金币、背包等业务状态。");
             host.AddNote("想看层的契约可以直接跳源码：");
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Core/Command/ICommand.cs",
+            host.AddCodeLink(new CodeRef("Packages/com.heroliss.ssframework/src/Core/Command/ICommand.cs",
                 "interface ICommand", "ICommand · 命令定义"));
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Core/Model/IModel.cs",
+            host.AddCodeLink(new CodeRef("Packages/com.heroliss.ssframework/src/Core/Model/IModel.cs",
                 "interface IModel", "IModel · Model 标记"));
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Core/View/MonoViewBase.cs",
+            host.AddCodeLink(new CodeRef("Packages/com.heroliss.ssframework/src/Core/View/MonoViewBase.cs",
                 "class MonoViewBase", "MonoViewBase · View 基类（业务继承点）"));
 
             host.AddSectionTitle("一眼判断：代码应该放在哪一层");
@@ -60,7 +60,7 @@ namespace Game.Framework.Demo.Modules
             host.AddNote("写操作永远朝一个方向：View → Command → Model，复杂规则则由 Command 委托给 System 再写 Model。" +
                          "View 想改状态只能发 Command；Command 在 `ICommandContext` 里拿 Model / System 干活；" +
                          "Model 变化再通过只读订阅“反向”推回 View 刷新界面。");
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Core/Command/ICommandContext.cs",
+            host.AddCodeLink(new CodeRef("Packages/com.heroliss.ssframework/src/Core/Command/ICommandContext.cs",
                 "interface ICommandContext", "ICommandContext · Command 访问层的入口"));
             host.AddTip("约定：View 不直接读 Model，连读状态也经“只读查询 Command”拿回 ReadOnlyReactiveProperty<T>。" +
                         "这样 UI 始终是状态的投影，不会出现 UI 偷偷改数据、两份真相打架。下一章“计数器”就是这个闭环的最小例子。");
@@ -76,9 +76,9 @@ namespace Game.Framework.Demo.Modules
                 + "Context 嵌套成作用域树（解析回退）、Hierarchy 决定注册去向（就近向上）、Bag 子作用域级联释放。"
                 + "节点放进哪个子树 = 一次说清「依赖从哪来、注册到哪去、何时被清理」。");
             host.AddNote("想看源码（其余见各自章节）：");
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Core/Internal/ICanSendCommand.cs",
+            host.AddCodeLink(new CodeRef("Packages/com.heroliss.ssframework/src/Core/Internal/ICanSendCommand.cs",
                 "interface ICanSendCommand", "编译期权限接口"));
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Core/Internal/IGameContext.cs",
+            host.AddCodeLink(new CodeRef("Packages/com.heroliss.ssframework/src/Core/Internal/IGameContext.cs",
                 "interface IGameContext", "IGameContext · 能力面"));
             // 只链公共契约（接口 + 业务继承点）；GameContext / DisposableBag 等底层实现不在这里给跳转——
             // 它们的“怎么用”分别在「多上下文（Context）」「生命周期」章里以 demo 用法行呈现。
@@ -96,3 +96,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

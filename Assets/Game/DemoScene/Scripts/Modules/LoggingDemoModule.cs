@@ -74,7 +74,7 @@ namespace Game.Framework.Demo.Modules
             // ── 定位 ──
             host.AddPositioning("统一门面 + 广播到可插拔日志接收器（sink）");
             host.AddNote("框架和业务**共用同一个入口** `Log`：分级记录（`Trace` / `Info` / `Warning` / `Error`），再**广播**给一组可插拔 `ILogSink`（Console / 文件 / 遥测…）。价值是「日志有一层可替换的接缝」——按级别 / 来源过滤、落文件捞日志、测试期捕获断言、重定向遥测，全在这一层着力，而不是把 `Debug.Log` 散落一地、事后无从拦截。",
-                new CodeRef("Assets/Game/Framework/Core/Logging/Log.cs", "public static class Log", "日志门面"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Logging/Log.cs", "public static class Log", "日志门面"));
             host.AddSubNote("为什么是**静态**门面而非 DI 服务：日志要在**任何地方**可用，包括身处 DI 之下、没有 `Context` 的内核基础设施（`Container` / 构造期）——它们不能反向依赖容器去取 logger。所以门面静态、出厂即用（默认装一个转 `Debug.Log` 的 `UnityDebugLogSink`，Console 观感 / 双击定位 / 堆栈全不变）。");
             host.AddSubNote("**双击定位**能保住，靠的是门面方法上的 `[HideInCallstack]`：没有它，Console 里双击任何一条日志都会跳进框架的转发方法、而不是你真正的调用点——这是所有「包一层 Debug.Log」的门面最常见的死因。");
 
@@ -118,7 +118,7 @@ namespace Game.Framework.Demo.Modules
             // ── 两道闸门 ──
             host.AddSectionTitle("两道闸门：全局 MinLevel（总闸）+ 每个 sink 的 MinLevel（分闸）");
             host.AddNote("一条日志要送达某个 sink，得**同时**过两道：**总闸门** `Log.MinLevel`（全局，默认 `Info`）和该 sink 自己的**分闸门** `MinLevel`。这是**一个概念（级别）、两个作用域**，与 Serilog / MS.Extensions.Logging 的模型一致。",
-                new CodeRef("Assets/Game/Framework/Core/Logging/Log.cs", "public static LogLevel MinLevel", "总闸门"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Logging/Log.cs", "public static LogLevel MinLevel", "总闸门"));
             host.AddSubNote("**为什么不是一个 `Verbose` 布尔**：早期确实是。但 sink + `MinLevel` 体系落地后它就被吸收了——「`Verbose=false`」≡「所有 sink 的 `MinLevel` ≥ `Info`」，两者做的是同一件事。并存反而制造陷阱：sink 明明写着接收 `Trace`，日志却被另一个布尔挡着，怎么调都不出来。收敛成单一的级别概念后，串联关系一目了然。附带好处：`Log.MinLevel = Warning` 可**全局压掉 Info 噪音**，这是原来做不到的。");
 
             // ── Trace + 惰性求值（核心） ──
@@ -158,7 +158,7 @@ namespace Game.Framework.Demo.Modules
             });
 
             host.AddNote("**先在总闸门 = `Info`（默认）时连点几次「发一条插值 Trace」——求值次数纹丝不动。再把总闸门放行到 `Trace` 去点，它才开始涨。** 这就是插值字符串处理器（C# 10）：`Log.Trace($\"...\")` 的参数不是先拼好的字符串，而是被编译器改写成一串 `Append` 调用，外面裹着一个 `if (级别放行吗)` 守卫。级别没放行 → 整块跳过 → **表达式一次都不求值、字符串一个字符都不拼**。",
-                new CodeRef("Assets/Game/Framework/Core/Logging/TraceInterpolatedStringHandler.cs", "public ref struct TraceInterpolatedStringHandler", "插值处理器实现"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Logging/TraceInterpolatedStringHandler.cs", "public ref struct TraceInterpolatedStringHandler", "插值处理器实现"));
             host.AddSubNote("对比普通 `string` 参数：`Log.Trace($\"解析 {type.Name} 耗时 {ms}ms\")` 会**先把字符串拼好**，进到方法里才发现级别没放行、直接丢弃——白拼、白分配。容器每解析一次就白拼一个字符串，这是真实存在、天天在发生的浪费。框架内 `Container` / `YooAssetProvider` 的诊断日志现在都走这条惰性路径。");
             host.AddSubNote("⚠ **唯一要守的纪律**：惰性意味着求值语义变了——参数里只放**纯读取**（属性、`ToString()`、拼字符串），**不要放有副作用的表达式**（`i++` / `list.Pop()`），因为级别没放行时它们不会执行。这与手写 `if (Log.IsEnabled(LogLevel.Trace)) Log.Trace(...)` 是完全相同的语义，处理器只是把守卫自动化了。");
             host.AddSubNote("发布版里 `Trace` 调用连同实参**整个从 IL 中删除**（`[Conditional(\"UNITY_EDITOR\")]` + `[Conditional(\"DEVELOPMENT_BUILD\")]`），比「方法体空转」更彻底。可在 `SSFramework/诊断与分析/运行时诊断` 顶部的日志栏调整本次 Editor 会话的总闸门。");
@@ -227,7 +227,7 @@ namespace Game.Framework.Demo.Modules
                 RefreshSink();
             }, CodeRef.Here("capturing = null; // 操作按钮主动拆除", "RemoveSink"));
             host.AddNote("`ILogSink` 就一个 `Log(in LogEntry)` + 一个 `MinLevel`。`AddSink` 后同一条日志广播到每个 sink；每个 sink 按自己的 `MinLevel` 独立过滤——可让 Console 只留 `Warning+`、细粒度进文件。测试静音 / 捕获断言就靠 `ClearSinks()` + 自装一个收集 sink（见 `LoggingTests`）。",
-                new CodeRef("Assets/Game/Framework/Core/Logging/ILogSink.cs", "public interface ILogSink", "sink 接缝契约"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Logging/ILogSink.cs", "public interface ILogSink", "sink 接缝契约"));
             host.AddSubNote("⚠ `ILogSink.Log` 可能被**后台线程**调用（如网络接收循环记日志）：持可变状态（文件句柄 / 缓冲）的 sink 要自行加锁（见 `FileLogSink`）。门面对 sink 列表用 copy-on-write，广播本身无锁。",
                 CodeRef.Here("private sealed class CapturingSink", "demo 捕获 sink 实现"));
             host.AddSubNote("本章捕获 sink 也遵守这条：后台线程只写 `ConcurrentQueue`，UI Toolkit scheduler 再在主线程排空并更新面板；不能因为 Demo 按钮本身从主线程点击，就假设接管来的引擎/第三方日志也在主线程。");
@@ -269,7 +269,7 @@ namespace Game.Framework.Demo.Modules
             }, CodeRef.Here("capturingUnity = false; // 操作按钮取消接管", "取消接管"));
 
             host.AddNote("`Log.CaptureUnityLogs()` 订阅 `Application.logMessageReceivedThreaded`，把 **Unity 自己的日志流**灌进 sink：不只是你的裸 `Debug.Log`，还包括**引擎级报错**（NullReferenceException、shader 错误）和**第三方包**（YooAsset / UniTask / R3）内部的日志。**一行调用点都不用改**，全量日志自动落盘 / 上报。不开的话，`FileLogSink` 只收显式调用门面的日志——而玩家崩溃时最该捞到的那条，恰恰不在里面。",
-                new CodeRef("Assets/Game/Framework/Core/Logging/UnityLogBridge.cs", "internal static class UnityLogBridge", "Unity 日志流桥"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Logging/UnityLogBridge.cs", "internal static class UnityLogBridge", "Unity 日志流桥"));
             host.AddSubNote("**防回声**是这里的关键坑：`UnityDebugLogSink` 会把门面日志转发成 `Debug.Log`，而那次 `Debug.Log` 又会触发桥接回调——不拦就会重复落盘、甚至无限回环。桥用一个**线程私有**标记（`[ThreadStatic]`）记住「本线程此刻正在由框架往 Console 写」，回调见到就忽略；桥接来的条目标记 `LogEntry.FromUnity`，`UnityDebugLogSink` 直接跳过（Console 里已经有了），而文件 / 遥测 sink 照常收。");
 
             // ── 落文件 ──
@@ -312,10 +312,10 @@ namespace Game.Framework.Demo.Modules
             {
                 Directory.CreateDirectory(logDir);
                 UnityEditor.EditorUtility.RevealInFinder(logDir);
-            }, new CodeRef("Assets/Game/Framework/Core/Logging/FileLogSink.cs", "public sealed class FileLogSink", "文件 sink 实现"));
+            }, new CodeRef("Packages/com.heroliss.ssframework/src/Core/Logging/FileLogSink.cs", "public sealed class FileLogSink", "文件 sink 实现"));
 #endif
             host.AddNote("落文件是客户端最常用的需求（玩家包 / QA 捞日志 / 用户反馈）：纯 C# `StreamWriter` 追加 + 按大小滚动，**零依赖**——不必为了「写个日志文件」就吞下一串 DLL。每次开档写一段**会话头**（设备 / 系统 / 版本 / 时间）：日志是追加的，多次启动会叠在一起，没有这段分隔根本分不清哪段是哪次运行、玩家用的什么机器——而这恰恰是排查的第一步。`Error` 条目自动带**堆栈**。",
-                new CodeRef("Assets/Game/Framework/Core/Logging/FileLogSink.cs", "private void WriteSessionHeader", "会话头"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Logging/FileLogSink.cs", "private void WriteSessionHeader", "会话头"));
 
             // ── 结构化字段 ──
             host.AddSectionTitle("结构化字段：Write(level, msg, fields)");
@@ -378,3 +378,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

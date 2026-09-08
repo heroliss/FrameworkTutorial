@@ -217,7 +217,7 @@ namespace Game.Framework.Demo.Modules
             host.AddConcept("DisposableBag", "消费侧的资源所有权入口；Load / LoadScene 返回的 handle 随 Bag 释放。");
             host.AddConcept("AssetReference", "Inspector 拖拽引用与 SO 配置的所有权规则，见下一章「资源引用 · Inspector 与配置」。");
             host.AddConcept("下载器", "预下载、进度、缓存清理与快照失效，见「资源分发 · 下载与缓存」。");
-            host.AddNote("`AssetUtility` 是场景侧基础设施入口，`IAssetProvider` 是 Core 与 YooAsset / Addressables 等实现之间的 seam。业务只依赖稳定 Interface；替换 Adapter 时不需要改这些加载调用。", new CodeRef("Assets/Game/Framework/Asset.Yoo/AssemblyInfo.cs", "DefaultAssetProvider", "默认 Provider 由 Adapter 注册"));
+            host.AddNote("`AssetUtility` 是场景侧基础设施入口，`IAssetProvider` 是 Core 与 YooAsset / Addressables 等实现之间的 seam。业务只依赖稳定 Interface；替换 Adapter 时不需要改这些加载调用。", new CodeRef("Packages/com.heroliss.ssframework/src/Asset.Yoo/AssemblyInfo.cs", "DefaultAssetProvider", "默认 Provider 由 Adapter 注册"));
         }
 
         private static VisualElement NewPreview(int size = 120)
@@ -238,3 +238,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

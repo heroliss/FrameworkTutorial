@@ -38,7 +38,7 @@ namespace Game.Framework.Demo.Modules
             host.AddSectionTitle("程序集接线：显式依赖只解决可见性");
             host.AddNote("框架程序集 `Game.Framework` 是 `autoReferenced:false`——业务 asmdef 必须显式加入 references 才能使用；业务代码直接使用 `R3`（如 `RP<T>`）或 `UniTask` 类型时，也显式引用对应程序集。这样能看清依赖方向，但不会自动完成包体裁剪。");
             host.AddSubNote("一个关键例外：当前可选 Runtime Module 都引用 Core。若 Core 热更，只要某个 Module 仍参与 Player 编译，它就不能被单独留在 AOT；否则会形成 `AOT → 热更` 引用，校验器会拒绝。",
-                new CodeRef("Assets/Game/Framework/Build/HybridCLR/Editor/HotUpdateAssemblyGraph.cs", "class HotUpdateAssemblyGraph", "热更传播约束 · AOT 不引用热更"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/HybridCLR/Editor/HotUpdateAssemblyGraph.cs", "class HotUpdateAssemblyGraph", "热更传播约束 · AOT 不引用热更"));
 
             host.AddSectionTitle("可选 Editor 工具也应跟随所属 Module");
             host.AddNote("配置中心不是一张写死全部 Profile 类型的中央名单：每个可选 Editor Module 只登记自己拥有的配置卡片。删除 Module 并完成域重载后，对应注册和卡片会一起消失；中央窗口不会为了显示一张卡片反向依赖所有可选实现。");
@@ -46,7 +46,7 @@ namespace Game.Framework.Demo.Modules
 #if UNITY_EDITOR
             host.AddActionRow("打开配置中心（观察已安装 Module 的卡片）",
                 () => DemoEditorNav.OpenMenu(ConfigCenterMenu),
-                new CodeRef("Assets/Game/Framework/Editor/FrameworkConfigRegistry.cs", "public static class FrameworkConfigRegistry", "FrameworkConfigRegistry · Module 自注册 Seam"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Editor/FrameworkConfigRegistry.cs", "public static class FrameworkConfigRegistry", "FrameworkConfigRegistry · Module 自注册 Seam"));
 #endif
 
             host.AddSectionTitle("安全裁剪工作流：原因 → 变更 → 目标平台证据");
@@ -57,10 +57,10 @@ namespace Game.Framework.Demo.Modules
 #if UNITY_EDITOR
             host.AddActionRow("打开模块裁剪审计（逐 Module 保留原因 / 任意入口）",
                 () => DemoEditorNav.OpenMenu(ModuleAuditMenu),
-                new CodeRef("Assets/Game/Framework/Editor/FrameworkModuleAudit.cs", "internal static class FrameworkModuleAudit", "Framework Module Audit · 真实引用闭包"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Editor/FrameworkModuleAudit.cs", "internal static class FrameworkModuleAudit", "Framework Module Audit · 真实引用闭包"));
             host.AddActionRow("打开真实构建体积证据（隔离删除 / 任意 Module）",
                 () => DemoEditorNav.OpenMenu(BuildSizeProbeMenu),
-                new CodeRef("Assets/Game/Framework/Editor/FrameworkBuildSizeProbe.cs", "internal static class FrameworkBuildSizeProbe", "Framework Build Size Probe · 隔离删除构建"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Editor/FrameworkBuildSizeProbe.cs", "internal static class FrameworkBuildSizeProbe", "Framework Build Size Probe · 隔离删除构建"));
 #endif
 
             host.AddSectionTitle("容易混淆：结构裁剪、成员裁剪与包管理");
@@ -76,3 +76,4 @@ namespace Game.Framework.Demo.Modules
 
     }
 }
+

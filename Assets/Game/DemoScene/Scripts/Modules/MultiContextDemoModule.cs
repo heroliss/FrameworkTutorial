@@ -33,7 +33,7 @@ namespace Game.Framework.Demo.Modules
                     "确认 ChapterAssets 下有 `DemoUGuiAssets`（已指定 ViewPrefab），并保留挂 `DemoSubContext` 的 SubContext 节点。",
                     "接线恢复后重新进入本章即可对比两份分数；恢复前先读“容器”章理解注册与解析，再回来看作用域覆盖。",
                     new CodeRef(
-                        "Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoSubContext.cs",
+                        "Assets/Game/DemoScene/Scripts/Modules/Support/DemoSubContext.cs",
                         "class DemoSubContext",
                         "子 Context 接线"));
                 return;
@@ -46,7 +46,7 @@ namespace Game.Framework.Demo.Modules
                     "把一个 `MonoScoreModel` 节点放到 SubContext 子树下，让它在 Awake 时就近注册进子 Context。",
                     "恢复后重新进入本章即可观察根/子两份分数；恢复前可先看“数据模型（Model）· 状态与 Inspector”了解 Mono 自动注册。",
                     new CodeRef(
-                        "Assets/Game/Framework/Demo/Scripts/Modules/Support/MonoScoreModel.cs",
+                        "Assets/Game/DemoScene/Scripts/Modules/Support/MonoScoreModel.cs",
                         "class MonoScoreModel",
                         "子树状态组件"));
                 return;
@@ -85,10 +85,10 @@ namespace Game.Framework.Demo.Modules
                 + "`Awake` 沿父链找最近 Context——挂 `UGuiAssets` 下读写根作用域的 `MonoScoreModel`，挂 `SubContext` 下读写子作用域那份。"
                 + "点弹窗里的 +1，看上面两行分数各自跳动——**挂哪儿就用哪个作用域，零代码切换**。"
                 + "这就是多 Context 的日常用法：业务不手动抓 Context，靠挂载位置说话。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/UGuiDemoView.cs", "class UGuiDemoView", "弹窗 View（与「View」章同一个）"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/UGuiDemoView.cs", "class UGuiDemoView", "弹窗 View（与「View」章同一个）"));
             host.AddNote("两个 `MonoScoreModel` 也都没写一行注册代码：挂在哪个 Context 的子树下，`Awake` 就近注册进哪个作用域——"
                 + "**Hierarchy 树就是作用域树**。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "MonoScoreModel（零注册代码）"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "MonoScoreModel（零注册代码）"));
 
             // ── 回退：子级没注册的类型，沿作用域链回退父级 ──
             host.AddSectionTitle("回退：子 Context 没有的类型，回退父级");
@@ -108,15 +108,15 @@ namespace Game.Framework.Demo.Modules
 
 #if UNITY_EDITOR
             host.AddActionRow("选中 SubContext 节点", () => DemoEditorNav.PingSceneObject(subCtxNode.gameObject),
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoSubContext.cs", "class DemoSubContext", "子 Context 定义"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/DemoSubContext.cs", "class DemoSubContext", "子 Context 定义"));
             host.AddActionRow("选中 子作用域的 ScoreModel", () => DemoEditorNav.PingSceneObject(subScore.gameObject),
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "Mono Model 定义"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "Mono Model 定义"));
             host.AddActionRow("选中 根作用域的 ScoreModel", () =>
             {
                 var rootContext = Object.FindFirstObjectByType<MonoDemoContext>();
                 var rootScore = DemoEditorNav.FindComponentOwnedBy<MonoScoreModel>(rootContext);
                 if (rootScore != null) DemoEditorNav.PingSceneObject(rootScore.gameObject);
-            }, new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "Mono Model 定义"));
+            }, new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "Mono Model 定义"));
             host.AddTip("点上面按钮去 Hierarchy 看结构：Main Context（根 Context）→ ChapterAssets/SubContext（DemoSubContext）→ 它的 ScoreModel (Sub)。"
                 + "运行时在 Inspector 里直接改任一实例的 Score，上方对应标签实时刷新——哪个作用域的数据一目了然。");
 #endif
@@ -138,3 +138,4 @@ namespace Game.Framework.Demo.Modules
 
     }
 }
+

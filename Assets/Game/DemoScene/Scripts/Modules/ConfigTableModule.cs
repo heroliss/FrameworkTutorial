@@ -16,7 +16,7 @@ namespace Game.Framework.Demo.Modules
     {
         private const string OverviewMenu = "SSFramework/代码生成/配置表 (Luban)";
         // demo 自带源目录（构建期输入，~ 后缀 Unity 不导入）——可直接打开；生成与配置管理仍集中在工作台。
-        private const string ConfigSourceDir = "Assets/Game/Framework/Demo/Configs~";
+        private const string ConfigSourceDir = "Assets/Game/DemoScene/Configs~";
 
         // View 侧的轮巡游标（纯展示状态，不属于任何 Model）。
         private int _itemCursor;
@@ -46,7 +46,7 @@ namespace Game.Framework.Demo.Modules
                 new[] { "表清单（LubanTableManifest.g.cs）", "随生成代码", "配置服务据此并行预载" });
             host.AddSubNote("为什么要表清单：生成的 `Tables` 构造函数是**同步**逐表要字节，而框架资源加载是**异步**——先按清单把全部数据并行预载进内存，" +
                             "再同步构造。清单与代码 / 数据同一次生成（CLI 跑完扫数据目录补写），不存在手工维护漏表（机制同热更代码包的 manifest）。",
-                new CodeRef("Assets/Game/Framework/Config/Editor/LubanGenerationTransaction.cs", "private static void WriteManifest(", "生成事务 · 校验暂存数据后写清单"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/Editor/LubanGenerationTransaction.cs", "private static void WriteManifest(", "生成事务 · 校验暂存数据后写清单"));
 
             // ── 2. 先看结果：各层一行取到强类型表（最常用的一步，先给概念落地） ──
             host.AddSectionTitle("先看结果：各层一行取到强类型表");
@@ -54,7 +54,7 @@ namespace Game.Framework.Demo.Modules
                          "`this.GetConfig<Tables>()` 拿到当前 Context 已就绪的表根，查询就是纯内存读、不需要查询 Command——" +
                          "下面按钮真实读 Play 中已加载的表。它不会偷偷使用全局配置；子 Context 仍会解析自己的配置服务。",
                 new CodeRef(
-                    "Assets/Game/Framework/Config/ConfigAccessExtensions.cs",
+                    "Packages/com.heroliss.ssframework/src/Config/ConfigAccessExtensions.cs",
                     "public static TTables GetConfig<TTables>(this ICanGetUtility self)",
                     "Context 感知的短读取入口"));
 
@@ -84,7 +84,7 @@ namespace Game.Framework.Demo.Modules
             }, CodeRef.Here("await this.EnsureConfig<Tables>(ct)", "命令式门禁 · 短入口直接取得 Tables 或原始异常"));
             host.AddSubNote("`State` 与 `EnsureReady` 不是两套重复 API：前者是响应式观察，后者把「等待 Ready/Failed → 返回 Tables / 抛根因」收进 Interface。" +
                             "调用方 token 只让当前等待者离开，不会因为一个窗口关闭就中止其他系统共享的配置加载；组件或 Context 销毁才取消真正的 owner。",
-                new CodeRef("Assets/Game/Framework/Config/IConfigUtility.cs", "UniTask<TTables> EnsureReady", "就绪契约 · 取消与失败语义"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/IConfigUtility.cs", "UniTask<TTables> EnsureReady", "就绪契约 · 取消与失败语义"));
 
             var itemLabel = host.AddValueDisplay("（点下方按钮查表）");
             host.AddActionRow("查下一条物品（轮巡 TbItem.DataList）", () =>
@@ -120,10 +120,10 @@ namespace Game.Framework.Demo.Modules
 
             host.AddSubNote("map 表按主键取用 `TbItem.Get(id)` / `TbItem[id]`（缺键抛异常）或 `GetOrDefault(id)`；全量遍历用 `DataList`；one 模式表（如 `TbGlobalConfig`）" +
                             "全表只有一条记录、直接读字段。这些访问器都是生成代码自带的——这个链接直接看生成出来的 `TbItem`（只在「想看生成代码长什么样」时点）。",
-                new CodeRef("Assets/Game/Framework/Demo/Config/Gen/TbItem.cs", "public Item Get(int key)", "生成代码 · TbItem 的 Get / GetOrDefault / DataList"));
+                new CodeRef("Assets/Game/DemoScene/Config/Gen/TbItem.cs", "public Item Get(int key)", "生成代码 · TbItem 的 Get / GetOrDefault / DataList"));
             host.AddSubNote("为什么没有做成静态 `TbItem[id]`：那必须隐藏一个“当前 Tables”，会丢掉父子 Context 覆盖、多配置集和测试隔离。" +
                             "框架只省掉没有信息量的解析样板，保留 `this.GetConfig<Tables>()` 这一小段有意义的作用域声明；高频调用把返回值缓存为字段后就是 `_tables.TbItem[id]`。",
-                new CodeRef("Assets/Game/Framework/Config/ConfigAccessExtensions.cs", "private static TTables RequireReady", "短入口仍保留 Context 与 readiness 防线"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/ConfigAccessExtensions.cs", "private static TTables RequireReady", "短入口仍保留 Context 与 readiness 防线"));
 
             // ── 3. 运行期：自加载的配置服务（Utility，不是 System） ──
             host.AddSectionTitle("运行期：一个自加载的配置服务（是 Utility，不是 System）");
@@ -132,7 +132,7 @@ namespace Game.Framework.Demo.Modules
                          "（View 没有 `GetModel`），做成 Utility 才让 View 也能直读（View 有 `ICanGetUtility`）；配置加载又没有资源系统那种多包 / CDN / 下载的" +
                          "复杂度，不必拆出 System——一个组件就够。资源系统虽然有多包 / CDN / 下载与状态机等复杂性，也把这些高内聚职责封装在一个深的 `AssetUtility` 中；" +
                          "它的运行参数是内嵌 Settings，不是业务 Model，启动薄编排也不再伪装成独立 System。",
-                new CodeRef("Assets/Game/Framework/Demo/Config/DemoConfigUtility.cs", "class DemoConfigUtility", "Demo 接入 · 仅两个 override"));
+                new CodeRef("Assets/Game/DemoScene/Config/DemoConfigUtility.cs", "class DemoConfigUtility", "Demo 接入 · 仅两个 override"));
 #if UNITY_EDITOR
             host.AddActionRow("选中 ConfigService 节点（DemoConfigUtility · 自加载配置服务）",
                 () => DemoEditorNav.PingSceneObject(GameObject.Find("ConfigService")));
@@ -147,16 +147,16 @@ namespace Game.Framework.Demo.Modules
             host.AddSubNote("其余通用编排（并行预载、异步→同步桥、加载状态机、按接口注册、生命周期）全在框架基类里。`TableFiles` 是**数据清单**、" +
                             "`CreateTables` 是**反序列化适配器**——换后端（JSON / 自定义格式）只改 `CreateTables` 一行，`TableFiles` 照旧；" +
                             "多套配置就是多个闭合不同 `Tables` 的子类，各有自己这两块。",
-                new CodeRef("Assets/Game/Framework/Config/MonoConfigUtilityBase.cs", "protected abstract IReadOnlyList<string> TableFiles", "框架基类 · 两个 abstract 接缝"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/MonoConfigUtilityBase.cs", "protected abstract IReadOnlyList<string> TableFiles", "框架基类 · 两个 abstract 接缝"));
             host.AddSubNote("框架会在任何资源 I/O 前快照并校验清单：空项、重复项会直接失败，`CreateTables` 返回 null 也会被拒绝。这样生成管线或 Adapter 的错误在配置边界就暴露，" +
                             "不会加载到一半才留下难解释的部分副作用；失败的原始异常既写入 `Log`，也由 `EnsureReady` 交还给需要阻断流程的调用方。",
-                new CodeRef("Assets/Game/Framework/Config/MonoConfigUtilityBase.cs", "private IReadOnlyList<string> SnapshotAndValidateTableFiles()", "清单防线 · I/O 前 fail-fast"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/MonoConfigUtilityBase.cs", "private IReadOnlyList<string> SnapshotAndValidateTableFiles()", "清单防线 · I/O 前 fail-fast"));
             host.AddSubNote("组件上还有两个 Inspector 字段：`_packageName`（配置数据在哪个资源包，留空 = 默认包）与 `_initializePackageIfIdle`" +
                             "（该包没开「自动初始化」时，由配置服务在加载前先初始化它——合规启动 / DLC 懒加载等场景才需要；demo 这套勾上了）。",
-                new CodeRef("Assets/Game/Framework/Config/MonoConfigUtilityBase.cs", "private string _packageName", "两个 Inspector 字段：包名 / 按需初始化"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/MonoConfigUtilityBase.cs", "private string _packageName", "两个 Inspector 字段：包名 / 按需初始化"));
             host.AddSubNote("解耦边界：框架 `Game.Framework.Config` 模块不引用 Luban——它只做「清单 → 预载字节 → 调抽象工厂」的通用编排；" +
                             "整条链路里接触 Luban 类型（`ByteBuf`）的只有上面 `CreateTables` 那一行。换任何配置后端，框架模块原样可用。",
-                new CodeRef("Assets/Game/Framework/Config/MonoConfigUtilityBase.cs", "class MonoConfigUtilityBase", "框架基类（后端无关，自加载）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/MonoConfigUtilityBase.cs", "class MonoConfigUtilityBase", "框架基类（后端无关，自加载）"));
 
             // ── 4. 改表工作流 ──
             host.AddSectionTitle("改一张表的完整工作流");
@@ -172,7 +172,7 @@ namespace Game.Framework.Demo.Modules
                          "随 demo 程序集（带 `UNITY_EDITOR` 约束）与样例资源包一并被正式打包排除。正式游戏在自己目录里建**另一个** `LubanConfigProfile`" +
                          "（各自的 `luban.conf` 源 + 输出 + 命名空间）即可与 demo 并存；「生成全部」逐套生成，定位 / 打开目录 / 单独生成都在「配置总览」窗口。");
             host.AddActionRow("打开配置总览（定位 / 打开目录 / 单独生成）", () => DemoEditorNav.OpenMenu(OverviewMenu),
-                new CodeRef("Assets/Game/Framework/Config/Editor/LubanConfigOverviewWindow.cs", "class LubanConfigOverviewWindow", "多套配置的集中视图"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Config/Editor/LubanConfigOverviewWindow.cs", "class LubanConfigOverviewWindow", "多套配置的集中视图"));
             host.AddSubNote("「多套配置」同时就是**懒加载的落点**——按需加载分两个粒度看：**单表**没有、也不建议（生成的 `Tables` 一次性构造全表、" +
                             "且跨表 `ResolveRef` 要全表在场，配置又是小体积只读数据，全量预载最省心）；真要「用到才加载」就**按配置集拆**：把 DLC / 活动 / " +
                             "巨表做成**另一套** `Tables` + 另一个配置服务，让它的组件晚点才实例化（进对应玩法时才挂上 / 放进按需创建的子 Context），那套就用到才加载——" +
@@ -190,3 +190,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

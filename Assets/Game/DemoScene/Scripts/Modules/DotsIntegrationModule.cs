@@ -26,16 +26,16 @@ namespace Game.Framework.Demo.Modules
 
         // 框架自身的接缝先例 / 驱动点 / AOT 边界执行处——本章可点击跳转全部落在这些框架文件上（不跳 Outpost）。
         private static readonly CodeRef SeamPrecedent = new(
-            "Assets/Game/Framework/Core/Asset/AssetProviderFactory.cs", "CreateDefault",
+            "Packages/com.heroliss.ssframework/src/Core/Asset/AssetProviderFactory.cs", "CreateDefault",
             "IAssetProvider 后端工厂（换后端只改这一行的先例）");
         private static readonly CodeRef SeamInterface = new(
-            "Assets/Game/Framework/Core/Asset/IAssetProvider.cs", "interface IAssetProvider",
+            "Packages/com.heroliss.ssframework/src/Core/Asset/IAssetProvider.cs", "interface IAssetProvider",
             "零依赖接缝接口（ports & adapters 的 port）");
         private static readonly CodeRef SystemDriver = new(
-            "Assets/Game/Framework/Core/Systems/MonoSystemBase.cs", "class MonoSystemBase",
+            "Packages/com.heroliss.ssframework/src/Core/Systems/MonoSystemBase.cs", "class MonoSystemBase",
             "System 层（realtime 仿真的驱动位，ADR-0014）");
         private static readonly CodeRef AotBoundary = new(
-            "Assets/Game/Framework/Build/HybridCLR/Editor/HotUpdateAssemblyGraph.cs", "class HotUpdateAssemblyGraph",
+            "Packages/com.heroliss.ssframework/src/Build/HybridCLR/Editor/HotUpdateAssemblyGraph.cs", "class HotUpdateAssemblyGraph",
             "热更程序集图（AOT↔热更边界机器校验）");
 
         public override void Build(DemoModuleHost host)
@@ -109,3 +109,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

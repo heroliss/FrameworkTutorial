@@ -13,7 +13,7 @@
 当前可验证交付物是一套完整 Unity 工程，而不是已经发布到 Registry 的 UPM 包：
 
 1. 使用 **Unity 6000.3.22f1** 打开仓库根目录；先让 Package Manager 和脚本完成导入。
-2. 打开 `Assets/Game/Framework/Demo/Scenes/DemoScene.unity`，进入 Play Mode；左侧 35 个自动发现章节覆盖核心概念、常用能力与接入工作流。
+2. 打开 `Assets/Game/DemoScene/Scenes/DemoScene.unity`，进入 Play Mode；左侧 35 个自动发现章节覆盖核心概念、常用能力与接入工作流。
 3. 从菜单 `SSFramework/工具中心` 进入配置、生成、构建与诊断入口；高风险动作会在按钮与 Implementation 两层校验前置条件。
 4. 框架 API 从[用户手册 §3 快速开始](docs/framework-guide.md#3-快速开始)起读；要把另一个 AI 接入本项目，从[接入与 Handoff](docs/ai-agent-onboarding.md)起读。
 5. 交互式验证先运行 Unity Test Runner；工程外完整回归需先关闭 Editor，再执行 `Tools/run-tests.ps1`。PlayMode 的 MCP 流程见[Unity MCP 项目要点](docs/unity-mcp-tips.md)。
@@ -205,7 +205,7 @@ public class HudView : MonoViewBase
 | [Odin 可选集成与移除](docs/optional-odin-integration.md) | 框架使用者 / 包维护者 | 原生基线、授权边界、迁移步骤与未来 Adapter 准入条件 |
 | [架构决策记录](docs/adr/README.md) | 设计评审者 | 关键决策的 Context / Decision / Consequences |
 | [框架使用规则](Assets/Game/AGENTS.md) | AI Agent / 团队成员 | 业务代码遵循的核心约定 |
-| [框架内部编码规则](Assets/Game/Framework/AGENTS.md) | 框架维护者 | 改框架源码时的内部规范 |
+| [框架内部编码规则](Packages/com.heroliss.ssframework/src/AGENTS.md) | 框架维护者 | 改框架源码时的内部规范 |
 | [项目协作规则](AGENTS.md) | 所有协作者 | 项目级 AI 协作约定 |
 | [AI 协作方案设计原理](docs/ai-collaboration-guide.md) | 工具配置者 | 跨 Agent 公共真值、规则演进、Skill 与 Harness 的边界 |
 | [其他 AI 接入与 Handoff](docs/ai-agent-onboarding.md) | 新 Agent / 交接者 | 最薄接入步骤、能力探针、证据包与失败降级 |
@@ -235,7 +235,7 @@ public class HudView : MonoViewBase
 
 ## 🎯 示例项目
 
-`Assets/Game/Framework/Demo/` 是一个可运行的交互式教学 demo（模块化章节外壳 + 左侧导航），由简入深覆盖框架全部能力：
+`Assets/Game/DemoScene/` 是一个可运行的交互式教学 demo（模块化章节外壳 + 左侧导航），由简入深覆盖框架全部能力：
 
 | 分类 | 章节 |
 |---|---|
@@ -285,3 +285,4 @@ SSFramework/
 ## 📌 状态
 
 **2026-09 Framework Baseline 已形成。** 核心抽象、19 个生产程序集、对应测试、交互式 Demo、Editor 工具、文档和 AI 协作入口已经达到可复核的阶段冻结点。它不是“从此不再改”的终点，也不是已经完成 SemVer / UPM 发布承诺；下一阶段将以《游牧工坊》这一 Steam / Windows 优先的正规 3D 商业游戏验证真实生产，只让被产品证据证明的通用缺口回流框架。平台与证据 Gate 见[首款商业 3D 游戏策略](docs/commercial-3d-game-strategy.md)，当前玩法假设与首版范围见[《游牧工坊》产品愿景与第一版地基](docs/nomad-workshop-game-vision.md)，框架延后项见[持续完善计划](docs/project-improvement-plan.md)。
+

@@ -133,7 +133,7 @@ namespace Game.Framework.Demo.Modules
                 var spawnLabel = host.AddValueDisplay();
                 var poolLabel = host.AddValueDisplay();
                 var instLabel = host.AddValueDisplay("",
-                    new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/PooledChip.cs", "class PooledChip", "PooledChip 计数"));
+                    new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/PooledChip.cs", "class PooledChip", "PooledChip 计数"));
 
                 // 分栏骨架：左列放控制按钮，右列是 UI Toolkit 占位框；UGUI 容器按占位框 worldBound 对齐，做出"镶嵌"效果。
                 var demoRow = new VisualElement();
@@ -237,7 +237,7 @@ namespace Game.Framework.Demo.Modules
                     }, CodeRef.Here("goPool.TrimAsync(2", "分帧收缩用法"));
 #if UNITY_EDITOR
                     host.AddActionRow("选中对象池演示容器", () => DemoEditorNav.PingSceneObject(assets.SpawnRoot.gameObject),
-                        new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoPoolAssets.cs", "class DemoPoolAssets", "对象池演示资产引用"));
+                        new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/DemoPoolAssets.cs", "class DemoPoolAssets", "对象池演示资产引用"));
                     host.AddActionRow("选中池停放节点", () =>
                     {
                         var parking = FindParkingRoot();
@@ -248,10 +248,10 @@ namespace Game.Framework.Demo.Modules
 
                 host.AddNote("方块颜色随 Spawn 逐格渐变 = `OnRent` 在 GameObject 上每次取出都跑（复用的旧实例也重新着色）；"
                     + "预热后「真正实例化」涨、之后反复生成 / 清理却不再涨 = 池在复用旧实例、省掉 `Instantiate`。归还时 `OnReturn` 复位颜色，复用不带上一手的脏状态——和 C# 段 `Stamp` 清零同理。",
-                    new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/PooledChip.cs", "void OnRent", "PooledChip.OnRent/OnReturn"));
+                    new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/PooledChip.cs", "void OnRent", "PooledChip.OnRent/OnReturn"));
                 host.AddNote("预热（`Prewarm`）把实例化尖峰挪到加载期、收缩（`Trim`）在内存吃紧时回收过度预热的空闲实例；两者都分帧摊开开销（每帧 `perFrame` 个），避免一次性 `Instantiate`/`Destroy` 一大批造成卡顿。即使源 prefab 默认激活，预热 clone 也先在停用 parking 下完成接线，不会误跑一次 Awake/OnEnable；正式 Spawn 定位后才首次激活。C# 池开销小，用同步 `Prewarm`/`Trim` 即可。");
                 host.AddNote("`Bag.Spawn` 和 `Bag.Rent` 心智一致：借来的东西进 `Bag`，`Bag.Dispose`（清理本轮 / 切走本章）统一自动 `Despawn` 归还，而不是留在场景里。右侧方块区是 UGUI 容器按 UI Toolkit 占位框对齐出来的“镶嵌效果”（**浮层对齐**）：两套 UI 不能互为子节点，但可用占位元素同步屏幕位置。⚠ 占位框的 `worldBound` 是**面板点**坐标、UGUI 是**屏幕像素**，两者比例随 DPI / 缩放模式而变（本机 1.5×）——`AlignToAnchor` 先按面板根尺寸把面板点换算成屏幕像素再赋值，才对齐得准、滚动也跟内容同速。容器上挂了 `RectMask2D`，方块排满溢出框会被裁掉。",
-                    new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoPoolAssets.cs", "void AlignToAnchor", "占位对齐 + 面板点→屏幕像素换算"));
+                    new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/DemoPoolAssets.cs", "void AlignToAnchor", "占位对齐 + 面板点→屏幕像素换算"));
                 host.AddNote("但**浮层终究浮在面板之上**：整块框滚出 `ScrollView` 视口时，方块不会被外层 ScrollView 裁剪（浮层的固有边界）。要方块真正随 Toolkit 内容流被裁剪 / 遮挡 / 滚动，改用「UI 融合」章的 RenderTexture 桥（更重，要专用 layer + 相机）。");
                 host.AddNote("「手动 Spawn / Despawn 单个」对应 C# 段的手动 `Rent` / `Return`：实例不进 bag、归还时机完全自己掌管（弹幕级高频热路径配领域 List 走这条），和 `Bag.Spawn` 取的是同一个池——`Despawn` 单个归还后下次 Spawn 会复用它。注意 `Bag.Spawn` 出来的实例别绕过 bag 直接 `goPool.Despawn`（会和 bag 的自动归还叠成重复归还）——要提前还，用上面同一 bag 的 `Bag.Despawn(go)`。");
                 host.AddNote("归还的空闲实例停在一个停用的 DontDestroyOnLoad 节点 `[Game.Framework PooledObjects]` 下（点上面按钮可选中它看）。该节点被外部误删后，下次归还会自愈重建，实例不会散落到场景根。parking 只保存空闲缓存：不传 parent 的 Spawn 会显式回到当前激活 Scene，不会意外变成跨场景常驻对象。");
@@ -268,7 +268,7 @@ namespace Game.Framework.Demo.Modules
             host.AddConcept("RegisterOwnedUtility", "纯 C#、自动登记具体类型与 Utility Interface，并随 `Context.Dispose` 两阶段关池——先拒绝新工作并清空 idle；此前借出的 lease 仍可做一次 terminal Return / Despawn 完成清理，但不会重新入池。demo 根 Context 用的就是它。");
             host.AddConcept("RegisterUtility", "纯 C#、同样自动推导契约，但生命周期由外部持有；只在已有明确 owner 时使用。");
             host.AddConcept("MonoPoolUtility", "Mono：挂 Context 子节点，可在 Inspector 针对各 prefab 配容量 / 预热，随该 GameObject / 场景销毁自动清池。底层复用同一套逻辑。");
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/MonoDemoContext.cs", "builder.RegisterOwnedUtility(new PoolUtility", "demo 注册（RegisterOwnedUtility）"));
+            host.AddCodeLink(new CodeRef("Assets/Game/DemoScene/Scripts/Core/MonoDemoContext.cs", "builder.RegisterOwnedUtility(new PoolUtility", "demo 注册（RegisterOwnedUtility）"));
 
             host.AddCaution("约定：归还后别再用那个实例（可能已被下一位租借者取走），状态清理放归还侧（IPoolable.OnReturn 或 GetPool 的 onReturn 委托）；容量上限 maxSize 超限即丢弃 / Destroy，GameObject 池可用 Prewarm(n, perFrame) / TrimAsync 分帧摊开开销；重复 / 外来归还与钩子重入在所有构建中都会被拒绝，Utility 关闭后新工作抛 ObjectDisposedException，只有旧 lease 保留最后一次归还出口。");
         }
@@ -296,3 +296,4 @@ namespace Game.Framework.Demo.Modules
         public void OnReturn() => Stamp = 0;  // 归还时清状态，避免脏数据流给下一个租借者
     }
 }
+

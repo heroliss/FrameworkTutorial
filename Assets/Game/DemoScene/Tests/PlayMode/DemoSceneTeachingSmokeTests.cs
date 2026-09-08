@@ -26,7 +26,7 @@ namespace Game.Framework.Demo.PlayMode.Tests
     /// </summary>
     public sealed class DemoSceneTeachingSmokeTests
     {
-        private const string DemoScenePath = "Assets/Game/Framework/Demo/Scenes/DemoScene.unity";
+        private const string DemoScenePath = "Assets/Game/DemoScene/Scenes/DemoScene.unity";
 
         private bool _loadedDemoScene;
         private bool _previousRunInBackground;
@@ -436,3 +436,4 @@ namespace Game.Framework.Demo.PlayMode.Tests
     }
 }
 #endif
+

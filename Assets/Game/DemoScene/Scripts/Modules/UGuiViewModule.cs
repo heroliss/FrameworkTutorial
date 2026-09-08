@@ -26,7 +26,7 @@ namespace Game.Framework.Demo.Modules
                     "在 Demo 根 Context 子树下挂 `DemoUGuiAssets`，并给 `ViewPrefab` 指定带 `UGuiDemoView` 的 prefab。",
                     "接线恢复后重新进入本章即可操作；恢复前可先看“UI Toolkit View”理解同一 View 契约在另一种载体上的写法。",
                     new CodeRef(
-                        "Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoUGuiAssets.cs",
+                        "Assets/Game/DemoScene/Scripts/Modules/Support/DemoUGuiAssets.cs",
                         "class DemoUGuiAssets",
                         "场景资源接线组件"));
                 return;
@@ -47,9 +47,9 @@ namespace Game.Framework.Demo.Modules
                 // 弹出即选中它，方便立刻在 Inspector 看 MonoViewBase 的 Resolved Context（它绑定到的 Context）。
                 DemoEditorNav.PingSceneObject(go);
 #endif
-            }, new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/UGuiDemoView.cs", "class UGuiDemoView", "UGuiDemoView · 真实 View"));
+            }, new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/UGuiDemoView.cs", "class UGuiDemoView", "UGuiDemoView · 真实 View"));
             host.AddNote("弹窗里：「+1」经 `ExecuteCommand` 写、文字只读订阅查询 Command；「Close」销毁自己——`Bag` 随之 `Dispose`，订阅退订。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/UGuiDemoView.cs", "protected override void Awake", "View 内部接线（Awake）"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/UGuiDemoView.cs", "protected override void Awake", "View 内部接线（Awake）"));
 
             host.AddSectionTitle("它绑定到哪个 Context");
             host.AddNote("View 实例化在 demo 根子树下，`Awake` 沿父链找到最近的 Context = `MonoDemoContext`（demo 的根 Context）并绑定。注意：View 不“注册”进容器（它不被别人依赖），只是把自己注入 + 绑定 `Bag`。"
@@ -59,7 +59,7 @@ namespace Game.Framework.Demo.Modules
             {
                 var ctx = Object.FindFirstObjectByType<MonoDemoContext>();
                 if (ctx != null) DemoEditorNav.PingSceneObject(ctx.gameObject);
-            }, new CodeRef("Assets/Game/Framework/Demo/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext", "demo 根 Context 定义"));
+            }, new CodeRef("Assets/Game/DemoScene/Scripts/Core/MonoDemoContext.cs", "class MonoDemoContext", "demo 根 Context 定义"));
             host.AddTip("弹出后会自动选中这个 View——在 Inspector 顶部看 MonoViewBase 的 “Resolved Context”，就是它绑定到的 Context（正是 demo 根的 MonoDemoContext）。");
 #endif
 
@@ -70,9 +70,9 @@ namespace Game.Framework.Demo.Modules
             host.AddConcept("Awake 即可接线", "View 执行顺序 -100（最晚），`Awake` 时各层都已就绪，可直接 `ExecuteCommand` 订阅状态；覆写 `Awake` 切记先调 `base.Awake()`（基类负责注入 + 绑定 Context），漏了会 NPE。");
 
             host.AddNote("弹窗的状态与读写 Command 与「Model」章**共用**（`MonoScoreModel` + 它的查询/自增命令）——切到 Model 章看到的是同一个分数，同一份场景状态贯穿多章：");
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "MonoScoreModel · 状态"));
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/ModelReactiveModule.cs", "struct GetMonoScoreCommand", "只读查询 Command"));
-            host.AddCodeLink(new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/ModelReactiveModule.cs", "struct RaiseMonoScoreCommand", "写操作 Command"));
+            host.AddCodeLink(new CodeRef("Assets/Game/DemoScene/Scripts/Modules/Support/MonoScoreModel.cs", "class MonoScoreModel", "MonoScoreModel · 状态"));
+            host.AddCodeLink(new CodeRef("Assets/Game/DemoScene/Scripts/Modules/ModelReactiveModule.cs", "struct GetMonoScoreCommand", "只读查询 Command"));
+            host.AddCodeLink(new CodeRef("Assets/Game/DemoScene/Scripts/Modules/ModelReactiveModule.cs", "struct RaiseMonoScoreCommand", "写操作 Command"));
 
             host.AddSectionTitle("View 是一层，不是一类");
             host.AddNote("demo 其它章节扮演的“view 角色”是纯 C#（`DemoModuleBase`），这章是 Mono（UGUI）真实 View——两者享有相同的 View 权限，差别只是载体。核心层（Model / Command / System）对用 UGUI 还是 UI Toolkit 一无所知。");
@@ -86,3 +86,4 @@ namespace Game.Framework.Demo.Modules
     }
 
 }
+

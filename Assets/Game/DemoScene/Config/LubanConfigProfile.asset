@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: LubanConfigProfile
   m_EditorClassIdentifier: Game.Framework.Config.Editor::Game.Framework.Config.Editor.LubanConfigProfile
   _lubanToolPath: Tools/Luban/Luban.exe
-  _confPath: Assets/Game/Framework/Demo/Configs~/luban.conf
+  _confPath: Assets/Game/DemoScene/Configs~/luban.conf
   _target: client
-  _outputCodeDir: Assets/Game/Framework/Demo/Config/Gen
-  _outputDataDir: Assets/Game/Framework/Demo/Res/Configs
+  _outputCodeDir: Assets/Game/DemoScene/Config/Gen
+  _outputDataDir: Assets/Game/DemoScene/Res/Configs
   _manifestNamespace: DemoCfg
   _extraArgs: 
+

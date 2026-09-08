@@ -82,7 +82,7 @@ namespace Game.Framework.Demo.Modules
             // ── 定位 ──
             host.AddPositioning("类型化整存整取，防损坏由框架兜住");
             host.AddNote("每类持久数据定义一个 `[Serializable]` 类（设置 = `SettingsData`、存档 = `PlayerSaveData`），整对象 `Save` / `Load`——延续框架「用类型代替字符串」的理念，**刻意不提供** `GetInt/SetString` 散装 KV（碎片标记 Unity 的 `PlayerPrefs` 本身够用）。写路径 = 临时文件 → 原子替换 → 上一版自动备份，读路径 = 主文件损坏自动回退备份：**写一半崩溃 / 断电不丢档**，业务不再手写这类样板。",
-                new CodeRef("Assets/Game/Framework/Core/Storage/IStorageUtility.cs", "public interface IStorageUtility", "存储入口契约"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Storage/IStorageUtility.cs", "public interface IStorageUtility", "存储入口契约"));
             host.AddSubNote("「key 是持久契约」：落成文件名，显式传、用常量管理、只增不改（改 key = 丢旧档，与资源 location 同一心智）。字符集限字母/数字/-/_，`/` 分段做槽位分组；非法 key 抛异常（本章 key 都是本文件顶部的 const）。");
 
             // ── 注册方式 ──
@@ -287,7 +287,7 @@ namespace Game.Framework.Demo.Modules
             {
                 Directory.CreateDirectory(DemoRootPath);
                 UnityEditor.EditorUtility.RevealInFinder(DemoRootPath);
-            }, new CodeRef("Assets/Game/Framework/Core/Storage/FileStorageProvider.cs", "private static void ReplaceAtomic(", "原子写实现"));
+            }, new CodeRef("Packages/com.heroliss.ssframework/src/Core/Storage/FileStorageProvider.cs", "private static void ReplaceAtomic(", "原子写实现"));
 #endif
             host.AddNote("每个 key 至多三个文件：`<key>.sav`（主）/ `.sav.bak`（上一版备份）/ `.sav.tmp`（写入途中）。写路径「临时文件 → 原子替换 → 旧版变备份」保证任何时刻磁盘上都有一份完整可读的数据。默认序列化是带缩进的明文 JSON——`.sav` 可直接用文本编辑器打开调试；体积敏感 / 要混淆就换 serializer（见下方扩展点）。");
 
@@ -375,3 +375,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

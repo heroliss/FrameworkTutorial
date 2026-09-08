@@ -3,8 +3,8 @@
 本项目以 Codex 为当前主要且已验证的编码 Agent。为让未来的其他 Agent 易于承接，跨工具真值只放在 `AGENTS.md`、`.agents/skills/`、文档、测试与项目工具中；不提前维护尚未采用产品的专用配置。本文件只放需要 Agent **始终记住、无法靠代码结构自然约束**的规则；不把某个客户端的按钮、快捷键或临时能力写成项目契约。场景化知识按目录、文档或 Skill 加载：
 
 - 使用框架 API：`Assets/Game/AGENTS.md`
-- 修改框架源码：`Assets/Game/Framework/AGENTS.md`
-- 编写 Demo 章节：`Assets/Game/Framework/Demo/Scripts/Modules/AGENTS.md`
+- 修改框架源码：`Packages/com.heroliss.ssframework/src/AGENTS.md`
+- 编写 Demo 章节：`Assets/Game/DemoScene/Scripts/Modules/AGENTS.md`
 - 协作原理：`docs/ai-collaboration-guide.md`
 - 其他 Agent 接入与 Handoff：`docs/ai-agent-onboarding.md`
 - Unity MCP 项目要点：`docs/unity-mcp-tips.md`
@@ -81,3 +81,4 @@
 ## 持续改进
 
 同类纠正反复出现、规则与代码冲突、固定检查只靠提醒、Skill 过时/重复，或常驻上下文逼近上限时，先说明观察与风险，再用 `propose-rule-evolution` 选择最窄载体；完整归类与放置表不重复常驻。截图流程用 `unity-screenshot`。客户端不能发现 Project Skill 时显式读取权威正文；缺少工具时缩小验证结论，不从产品目录猜规则。架构、目录或协作方案重大调整时同步 `docs/ai-collaboration-guide.md`。
+

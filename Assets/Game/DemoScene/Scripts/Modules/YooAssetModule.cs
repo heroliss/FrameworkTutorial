@@ -29,7 +29,7 @@ namespace Game.Framework.Demo.Modules
             // ── 定位 ──
             host.AddPositioning("YooAsset 是「当前默认后端」，不是框架契约");
             host.AddNote("框架把所有 YooAsset 接触面收口在 `IAssetProvider`，业务资源章节只认框架 Interface。Yoo Adapter 在自己的 Assembly 上声明默认实现；换 Addressables / 自研时物理替换 Adapter，无需修改 Core。所以本章是「了解当前后端怎么运转」，不是框架必须知识。",
-                new CodeRef("Assets/Game/Framework/Asset.Yoo/AssemblyInfo.cs", "DefaultAssetProvider", "Yoo Adapter 的默认实现注册"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Asset.Yoo/AssemblyInfo.cs", "DefaultAssetProvider", "Yoo Adapter 的默认实现注册"));
 
             // ── 表①·四种 PlayMode ──
             host.AddSectionTitle("四种 PlayMode 对比");
@@ -51,12 +51,12 @@ namespace Game.Framework.Demo.Modules
                 new[] { "`AssetBuild/Downloaded/<包>/`", "下载缓存（`Host` 下载落地）", "运行时下载写 / 运行时读", "否(gitignore)" },
                 new[] { "`AssetBuild/Deploy/`", "本地联调部署目录（python 服务的根）", "构建部署写 / python 服务读", "否(gitignore)" });
             host.AddSubNote("这些构建目录名都在单一真源 `AssetBuildLayout` 里定义（构建工具与运行时 provider 共用），改名只改一处。编辑器期 YooAsset 的下载缓存被重定向进 `AssetBuild/Downloaded`（否则它默认会在项目根冒出 yoo/、每次 `Host` Play 重生）；真机改用各平台 persistentDataPath，这个重定向纯属编辑器便利。",
-                new CodeRef("Assets/Game/Framework/Core/Asset/AssetBuildLayout.cs", "class AssetBuildLayout", "构建目录单一真源"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Asset/AssetBuildLayout.cs", "class AssetBuildLayout", "构建目录单一真源"));
 #if UNITY_EDITOR
             host.AddActionRow("打开下载缓存目录（AssetBuild/Downloaded）", RevealCacheDir,
-                new CodeRef("Assets/Game/Framework/Core/Asset/AssetBuildLayout.cs", "DownloadedRoot", "下载缓存目录（单一真源）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Asset/AssetBuildLayout.cs", "DownloadedRoot", "下载缓存目录（单一真源）"));
             host.AddActionRow("打开本地 CDN 部署目录（AssetBuild/Deploy）", RevealCdnDir,
-                new CodeRef("Assets/Game/Framework/Core/Asset/AssetBuildLayout.cs", "DeployRoot", "部署目录（单一真源）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Asset/AssetBuildLayout.cs", "DeployRoot", "部署目录（单一真源）"));
 #endif
 
             // ── 表③·清单文件 ──
@@ -79,35 +79,35 @@ namespace Game.Framework.Demo.Modules
                 new[] { "`Archive` (AFBP)", "同名 bundle 多文件合并归档", "归档文件", "专用 / 进阶" });
             host.AddSubNote("本框架构建器只用 SBP（`FrameworkAssetBuilder`，不提供 Legacy）；上表列全只为了解 YooAsset 全貌。");
             host.AddSubNote("SBP 内置 shader 包（坑）：YooAsset 窗口构建总要打「内置 shader 包」把引擎内置 shader 去重，但当前 SBP 版本那个任务已 obsolete，遇到「包里没有任何引用内置 shader 的资产」（如纯 Sprite 的样例包）会取空 layout 直接崩。所以构建器把它做成按包开关：真实有材质/UI 的包开（正确去重）、零 shader 的包关。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/FrameworkAssetBuilder.cs", "private static string ResolveBuiltinShaderBundleName(", "内置 shader 包开关 + 原委"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/FrameworkAssetBuilder.cs", "private static string ResolveBuiltinShaderBundleName(", "内置 shader 包开关 + 原委"));
 
             // ── 底层流程：EditorSimulate ──
             host.AddSectionTitle("底层流程 · EditorSimulate（开发期）");
             host.AddStep("①", "进 Play → `AssetUtility.Start` 编排自动初始化 → provider 在 `EditorSimulate` 分支自动跑一次 ESBP（模拟构建）。",
-                new CodeRef("Assets/Game/Framework/Asset.Yoo/YooAssetProvider.cs", "case AssetPlayMode.EditorSimulate", "EditorSimulate 自动模拟构建"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Asset.Yoo/YooAssetProvider.cs", "case AssetPlayMode.EditorSimulate", "EditorSimulate 自动模拟构建"));
             host.AddStep("②", "ESBP 生成「地址→AssetDatabase 路径」模拟清单 → 运行时直接读工程源资源：免打包、免下载、改完即时生效，也与平台无关。");
 
             // ── 底层流程：Host ──
             host.AddSectionTitle("底层流程 · Host（构建 → 部署 → 服务 → 下载缓存）");
             host.AddStep("①", "构建：打开 SSFramework/构建与发布/资源构建 工作台点“普通增量构建”，或由 CI 调 `FrameworkAssetBuilder`（都用 SBP）→ bundle 进 `AssetBuild/Bundles/<平台>/`，内置清单写 `StreamingAssets/yoo`。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/FrameworkAssetBuilder.cs", "public static (bool ok, string message) Build", "唯一构建实现"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/FrameworkAssetBuilder.cs", "public static (bool ok, string message) Build", "唯一构建实现"));
             host.AddSubNote("打哪些包、每包首包策略 / 内置 shader 包开关，都读构建配置 `FrameworkAssetBuildProfile`（单一配置源）。首包：含指定 tag 的 bundle 拷进 `StreamingAssets` 当首包（多 tag 用分号 `;` 分隔），其余运行时从 CDN 下；样例包用空 tag → 0 内置、只出内置清单，于是全从 CDN 真实下载。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/FrameworkAssetBuildProfile.cs", "class FrameworkAssetBuildProfile", "构建配置（按包）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/FrameworkAssetBuildProfile.cs", "class FrameworkAssetBuildProfile", "构建配置（按包）"));
             host.AddStep("②", "部署：产物按「每个包一个子目录」拷到 项目根/`AssetBuild/Deploy`（本地联调）或 CI 上传真实 CDN。`GameRemoteService` 按 {CDN}/{包名}/{文件} 取址。",
-                new CodeRef("Assets/Game/Framework/Asset.Yoo/YooAssetProvider.cs", "class GameRemoteService", "远端取址实现"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Asset.Yoo/YooAssetProvider.cs", "class GameRemoteService", "远端取址实现"));
             host.AddStep("③", "起服务：资源构建工作台的“启动本地 CDN 服务”= python -m http.server（端口取自构建 profile 的 `LocalServePort`，须与场景 `AssetUtility.Settings.CdnUrls` 第一条端口一致）；生产里这步换成 CDN 厂商。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/AssetBuildMenu.cs", "public static string StartServer(", "本地起服务（仅联调）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/AssetBuildMenu.cs", "public static string StartServer(", "本地起服务（仅联调）"));
             host.AddStep("④", "进 Play(`Host`)：先读 `StreamingAssets` 的 `BuiltinCatalog` → 拉远端 `.version` / 对应清单；远端不可用则激活随包内置版本清单 → 缺的非内置 bundle 按需从 CDN 下载并缓存到 项目根/`AssetBuild/Downloaded/<包>`。",
-                new CodeRef("Assets/Game/Framework/Asset.Yoo/YooAssetProvider.cs", "case AssetPlayMode.Host", "Host 初始化实现"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Asset.Yoo/YooAssetProvider.cs", "case AssetPlayMode.Host", "Host 初始化实现"));
             host.AddSubNote("`CdnUrls` 是候选列表：本地联调通常只填 `http://127.0.0.1:8080/`，多条时版本号 / 清单请求会随 YooAsset 的失败计数轮转重试；候选必须是等价镜像。包级「启用按需下载」（默认勾选）只影响 Host 下未缓存 bundle 的 `Load`：取消勾选后直接失败，强制先显式跑下载器。",
-                new CodeRef("Assets/Game/Framework/Core/Asset/AssetRuntimeSettings.cs", "public IReadOnlyList<string> CdnUrls =>", "运行时 CDN 配置"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Core/Asset/AssetRuntimeSettings.cs", "public IReadOnlyList<string> CdnUrls =>", "运行时 CDN 配置"));
 #if UNITY_EDITOR
             host.AddActionRow("定位 Collector 分包配置（构建按它执行）", () =>
-                DemoEditorNav.PingAsset("Assets/Game/Framework/Settings/AssetBundleCollectorSetting.asset"));
+                DemoEditorNav.PingAsset("Packages/com.heroliss.ssframework/src/Settings/AssetBundleCollectorSetting.asset"));
             host.AddActionRow("定位 AssetSystem 配置节点（切 PlayMode 在这）", () =>
             {
                 if (assetUtility != null) DemoEditorNav.PingSceneObject(assetUtility.gameObject);
-            }, new CodeRef("Assets/Game/Framework/Core/Asset/AssetUtility.cs", "class AssetUtility", "资源系统单入口"));
+            }, new CodeRef("Packages/com.heroliss.ssframework/src/Core/Asset/AssetUtility.cs", "class AssetUtility", "资源系统单入口"));
 #endif
             host.AddCaution("两个最常踩的坑：① 平台——AssetBundle 按平台区分，且编辑器进程本身是 Windows，加载不了为 Android 等移动平台构建的 bundle；要在编辑器里测 Host，先把 Build Target 切到 Standalone Windows 再重新构建，测移动平台请上真机。② 顺序——至少先构建再进 Play；要验证远端更新或加载非内置 bundle，还需部署并启动 CDN。Host 可以在远端失败时回退内置清单，但补构建后仍要重进 Play 才会重新初始化。");
 
@@ -118,16 +118,16 @@ namespace Game.Framework.Demo.Modules
             // ── 机制：加密（可选，两端成对）──
             host.AddSectionTitle("机制：资源加密（可选）");
             host.AddSubNote("加密分构建侧（写加密产物）与运行时侧（读时解密），必须【成对、参数一致】。框架内置“偏移加密”开箱即用：构建配置 `FrameworkAssetBuildProfile.FileOffset` 设 N(>0) → 构建在每个普通 AssetBundle 头插入 N 字节；场景 `AssetUtility` 的运行配置填相同 N。首场景早于场景配置，所以 `GameEntry` 改用工作台生成的 `AssetPackages.AssetBundleFileOffset`，构建前还会检查生成物是否过期。两端对不上会读坏所有 bundle。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/GameBundleOffsetEncryptor.cs", "class GameBundleOffsetEncryptor", "构建侧偏移加密器"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/GameBundleOffsetEncryptor.cs", "class GameBundleOffsetEncryptor", "构建侧偏移加密器"));
             host.AddSubNote("偏移是【弱】加密（只换文件头、不动 bundle 正文），内置上限 1 MiB；继续增大只会浪费空间，不会更安全。Offline / Host 可直接带偏移加载，WebGL 会先下载字节再在内存剥头。独立 RawFile `CodePackage` 不继承这个配置。要真加密（XOR/AES 等打乱正文）需自实现 `IBundleEncryptor` + 运行时对应解密器；Web 自定义解密器还必须实现 `IBundleMemoryDecryptor`。完整步骤见 `docs/asset-encryption.md`。",
-                new CodeRef("Assets/Game/Framework/Asset.Yoo/YooAssetProvider.cs", "private static void ApplyDecryptor(", "运行时侧解密器注册（按 FileOffset）"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Asset.Yoo/YooAssetProvider.cs", "private static void ApplyDecryptor(", "运行时侧解密器注册（按 FileOffset）"));
 
             // ── 操作：本地联调 vs 生产 ──
             host.AddSectionTitle("操作：本地联调 vs 生产构建");
             host.AddNote("本地联调（编辑器内测 `Host`）：打开 SSFramework/构建与发布/资源构建 工作台，依次「构建资源包 → 部署到本地目录 → 启动本地 CDN 服务」，再把场景 `PlayMode` 切 `Host` 重进 Play。三步拆开、用的就是生产同款构建，只有「本地起服务」是联调专属。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/AssetBuildWindow.cs", "class AssetBuildWindow", "资源构建工作台"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/AssetBuildWindow.cs", "class AssetBuildWindow", "资源构建工作台"));
             host.AddNote("正式发版：`FrameworkAssetBuilder` 是全工程唯一构建/部署实现，逐包构建 + 整理 CDN 待上传产物，可被 CI 的 `-executeMethod` 调用；上传 CDN 与版本管理交给 CI（见 build-assets.yml）。本地联调与生产用的是同一套构建，不是两套。",
-                new CodeRef("Assets/Game/Framework/Build/Editor/FrameworkAssetBuilder.cs", "class FrameworkAssetBuilder", "生产构建入口"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/Build/Editor/FrameworkAssetBuilder.cs", "class FrameworkAssetBuilder", "生产构建入口"));
         }
 
 #if UNITY_EDITOR
@@ -140,3 +140,4 @@ namespace Game.Framework.Demo.Modules
 #endif
     }
 }
+

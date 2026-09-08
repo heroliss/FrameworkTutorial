@@ -26,8 +26,8 @@ namespace Game.Framework.Demo.Modules
         public override string Summary =>
             "View 之上的 UI 调度：打开/关闭窗口、固定有序层级、Page 返回栈、模态遮罩、cover/reveal、缓存复用——渲染后端无关（UGUI/UIToolkit 共用一套核心，IUIBackend 吸收差异）。窗口经 IUIUtility 开，元数据用 [UIWindow] 特性声明。";
 
-        private const string WindowsFile = "Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoUIWindows.cs";
-        private const string UGuiWindowsFile = "Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoUGuiWindows.cs";
+        private const string WindowsFile = "Assets/Game/DemoScene/Scripts/Modules/Support/DemoUIWindows.cs";
+        private const string UGuiWindowsFile = "Assets/Game/DemoScene/Scripts/Modules/Support/DemoUGuiWindows.cs";
 
         public override void Build(DemoModuleHost host)
         {
@@ -38,7 +38,7 @@ namespace Game.Framework.Demo.Modules
                     "在该 Context 子树下挂一个 `MonoToolkitUI`（带 UIDocument）或 `MonoUGuiUI`（带 Canvas）；同一 Context 只选一个后端。",
                     "接好入口后重新进入本章即可操作；恢复前可先看“UGUI View / UI Toolkit View”，理解窗口背后的 View 契约。",
                     new CodeRef(
-                        "Assets/Game/Framework/UI.Toolkit/MonoToolkitUI.cs",
+                        "Packages/com.heroliss.ssframework/src/UI.Toolkit/MonoToolkitUI.cs",
                         "class MonoToolkitUI",
                         "Toolkit UI 入口"));
                 return;
@@ -47,7 +47,7 @@ namespace Game.Framework.Demo.Modules
             host.AddPositioning("窗口 = View 的一种，框架管层级/栈/模态调度");
             host.AddNote("窗口经 `IUIUtility` 打开；落哪层 / 缓存 / 模态由窗口类上的 `[UIWindow]` 特性声明。本章窗口都是代码搭建（无 authored 资产），开关即自动注入 + Bag 释放订阅。");
             host.AddSubNote("`Open<T>()` 是宽松入口：未获得窗口实例时返回 `null`，适合允许缺席并准备就地降级的提示窗；`OpenRequired<T>()` 是严格入口：把 `null` 变成带窗口类型与资源位置的异常，适合主页面、Flow 状态等业务不变量。本章按钮承诺打开可见窗口，因此使用严格入口。",
-                new CodeRef("Assets/Game/Framework/UI/UIUtilityExtensions.cs", "var window = await ui.Open<T>(ct);", "OpenRequired · 必需窗口入口"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/UI/UIUtilityExtensions.cs", "var window = await ui.Open<T>(ct);", "OpenRequired · 必需窗口入口"));
             host.AddNote("渲染后端无关：UGUI 与 UI Toolkit 共用同一套调度、可同屏并存；严格或宽松只决定失败策略，不绑定某种渲染技术。");
             host.AddNote("**怎么分辨两套 UI**：每个窗口左上角有后端标识药丸——**蓝色「UI Toolkit」**（下面前三节）/ **绿色「UGUI」**（末节）。两套渲染后端可**同屏并存**：开一个 Toolkit 窗口再开 UGUI 窗口，蓝、绿两张卡片会同时出现在屏幕上（UGUI 窗口刻意偏右下错开），各自能点，改的是**同一份分数**。");
             host.AddTip("怎么操作：按下面从浮到顶逐个试，注意「可点性」——这些控制按钮在 demo 内容区里。"
@@ -127,7 +127,7 @@ namespace Game.Framework.Demo.Modules
                 var drv = UnityEngine.Object.FindFirstObjectByType<DemoInputSystemBackKeyDriver>();
                 if (drv != null) DemoEditorNav.PingSceneObject(drv.gameObject);
             }, new CodeRef(
-                "Assets/Game/Framework/Demo/Scripts/Modules/Support/DemoInputSystemBackKeyDriver.cs",
+                "Assets/Game/DemoScene/Scripts/Modules/Support/DemoInputSystemBackKeyDriver.cs",
                 "class DemoInputSystemBackKeyDriver",
                 "项目输入 → UI Back 的 composition 样板"));
 #endif
@@ -169,18 +169,18 @@ namespace Game.Framework.Demo.Modules
             host.AddNote("开窗代码 `OpenRequired<T>()` 与 Toolkit **一字不差**——只是入口换成 `MonoUGuiUI`；`IUIBackend` 吸收了 Canvas(ScreenSpaceOverlay) vs VisualElement 的全部差异。这就是「核心渲染后端无关」的活证。");
 
             host.AddAsyncActionRow("打开 UGUI 计数窗口（prefab + 生成绑定）", async ct => await ugui.OpenRequired<DemoUGuiPrefabCounterWindow>(ct),
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/PrefabBinding/DemoUGuiPrefabCounterWindow.cs", "class DemoUGuiPrefabCounterWindow", "DemoUGuiPrefabCounterWindow"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/PrefabBinding/DemoUGuiPrefabCounterWindow.cs", "class DemoUGuiPrefabCounterWindow", "DemoUGuiPrefabCounterWindow"));
             host.AddNote("**预期**：屏幕**偏左下**再弹一张绿标 UGUI 计数卡片。这张不是代码搭建——控件在 **prefab 上摆好、脚本挂根上**，"
                 + "`ScoreText/AddButton/CloseButton` 三个字段由右键 prefab「生成 UI 绑定代码」产出的 `DemoUGuiPrefabCounterWindow.nodes.g.cs` 自动绑定（`transform.Find`），本窗口只在 `OnCreated` 写逻辑。");
             host.AddNote("**同一窗口、三种接法**：代码搭建（`UGuiCounterWindow`）／ 手工 `[SerializeField]` 拖引用（`UGuiDemoView`）／ prefab + 生成绑定（本窗口）——同一框架、同一份分数，只是节点引用怎么来不同。绑定代码全自动生成、改完 prefab 重新生成即可，省掉手接引用的重复劳动。");
             host.AddSubNote("⚠ prefab 窗口经资源系统按 location 加载——若点了没出现，先去「资源加载 · 就绪与生命周期」点击初始化，让默认包 Ready（代码搭建窗口不读资源、不受此影响）。");
 
             host.AddAsyncActionRow("打开 UGUI 计数窗口（变体）", async ct => await ugui.OpenRequired<DemoUGuiPrefabCounterWindowVariant>(ct),
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/PrefabBinding/DemoUGuiPrefabCounterWindowVariant.cs", "class DemoUGuiPrefabCounterWindowVariant", "DemoUGuiPrefabCounterWindowVariant"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/PrefabBinding/DemoUGuiPrefabCounterWindowVariant.cs", "class DemoUGuiPrefabCounterWindowVariant", "DemoUGuiPrefabCounterWindowVariant"));
             host.AddNote("上一张窗口的**预制体变体**：变体 prefab 只多加了个「归零」按钮。变体窗口类**继承**基窗口类、绑定**只生成净新增字段**（`ResetButton`）——"
                 + "基类的 Score / +1 / 关闭由 `base.OnCreated()` 复用，变体 `OnCreated` 里只接自己多出来的归零按钮。改基窗口，变体自动跟随。");
             host.AddSubNote("生成器靠 Unity 原生变体关系识别变体 → 子类 `: 基窗口类` + 只补新字段（删基节点 / 改基组件会在生成期警告）；本变体的增量绑定见生成文件。",
-                new CodeRef("Assets/Game/Framework/Demo/Scripts/Modules/PrefabBinding/Generated/DemoUGuiPrefabCounterWindowVariant.nodes.g.cs", "protected global::UnityEngine.UI.Button ResetButton", "变体增量绑定（nodes.g.cs）"));
+                new CodeRef("Assets/Game/DemoScene/Scripts/Modules/PrefabBinding/Generated/DemoUGuiPrefabCounterWindowVariant.nodes.g.cs", "protected global::UnityEngine.UI.Button ResetButton", "变体增量绑定（nodes.g.cs）"));
 
             host.AddSectionTitle("生成产物落点 · 目录级生成配置");
             host.AddNote("注意上面两张 prefab 窗口的绑定代码并没有落到全工程默认目录（正式游戏的 `Assets/Game/Main/UI`），而是和窗口逻辑待在同一个 `Modules/PrefabBinding/` 文件夹里——"
@@ -188,7 +188,7 @@ namespace Game.Framework.Demo.Modules
             host.AddSubNote("配置按 **prefab 所在目录向上**生效，逐字段覆盖：命名空间 / 逻辑目录 / 生成目录 / 文件名，每项「留空 = 继承上层」，一路回退到全工程 `UICodeGenProfile`（现为正式游戏默认值）。"
                 + "本 demo 那份**四项全填、完全自洽**——所以全局默认改成正式游戏设置后，demo 的绑定代码依旧落在 demo 目录、命名空间也仍是 `Game.Framework.Demo.Modules`，不受影响。"
                 + "于是「按模块分目录 / 分命名空间」既不用改生成器、也不用每个 prefab 单独设——把一个配置丢进目录，该目录（及子目录）下的 prefab 重新生成时就自动跟着走。",
-                new CodeRef("Assets/Game/Framework/UI.UGui/Editor/UICodeGenDirConfig.cs", "class UICodeGenDirConfig", "UICodeGenDirConfig · 目录级生成配置"));
+                new CodeRef("Packages/com.heroliss.ssframework/src/UI.UGui/Editor/UICodeGenDirConfig.cs", "class UICodeGenDirConfig", "UICodeGenDirConfig · 目录级生成配置"));
         }
 
         // 即使代码搭建窗口通常同步完成，也保留 UniTask 给 Host 统一治理异常、重入与切章取消。
@@ -226,3 +226,4 @@ namespace Game.Framework.Demo.Modules
         }
     }
 }
+

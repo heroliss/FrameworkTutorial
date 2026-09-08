@@ -22,7 +22,7 @@ namespace Game.Framework.Demo.Core
     /// </remarks>
     internal static class DemoCodeRefValidator
     {
-        private const string DemoScriptsRoot = "Assets/Game/Framework/Demo/Scripts";
+        private const string DemoScriptsRoot = "Assets/Game/DemoScene/Scripts";
 
         // 机制自身包含真实的工厂构造和示例语法，但它们不是教程 UI 上的跳转链接。
         private static readonly HashSet<string> InfraFiles = new(StringComparer.OrdinalIgnoreCase)
@@ -801,3 +801,4 @@ namespace Game.Framework.Demo.Core
     }
 }
 #endif
+
