@@ -6,7 +6,7 @@ import wave
 
 from PIL import Image, ImageDraw, ImageFont
 
-OUT_DIR = "Assets/Game/Framework/Demo/Res/L10N"
+OUT_DIR = "Assets/Game/DemoScene/Res/L10N"
 FONT_PATH = "Assets/Game/Fonts/NotoSansSC-Regular.ttf"  # 框架随附的简中字体，画中英文都够
 
 import os

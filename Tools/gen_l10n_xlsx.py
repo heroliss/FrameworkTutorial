@@ -31,6 +31,6 @@ widths = {"A": 8, "B": 22, "C": 52, "D": 60}
 for col, w in widths.items():
     ws.column_dimensions[col].width = w
 
-_out = "Assets/Game/Framework/Demo/Configs~/Datas/l10n.xlsx"
+_out = "Assets/Game/DemoScene/Configs~/Datas/l10n.xlsx"
 wb.save(_out)
 print("written:", _out)
