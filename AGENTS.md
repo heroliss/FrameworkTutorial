@@ -1,4 +1,4 @@
-# FrameworkTutorial 协作入口
+# SSFrameworkTutorial 协作入口
 
 本仓库只维护 SSFramework 教程工程。Framework 源码来自 `Packages/com.liss.ssframework/` 子仓库；Outpost 与 NomadWorkshop 不进入本工程编译图。
 

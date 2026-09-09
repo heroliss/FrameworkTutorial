@@ -2,7 +2,7 @@
 
 这是 SSFramework 的独立章节教程工程，用于把框架 API、模块边界和接入流程放进可运行的教学场景中。它不承担正式游戏玩法。
 
-仓库当前 GitHub 名称仍为 `FrameworkTutorial`；`SSFrameworkTutorial` 更能表达它与框架的关系，是建议的正式名称。仓库远端改名需要在 GitHub 设置中单独完成，当前本地目录、远端 URL 和 Unity 资产路径保持不变。
+仓库现已使用 GitHub 名称 `SSFrameworkTutorial`。仓库名称表达教程定位；Unity 资产路径仍暂时保留 `DemoScene`，因为其中包含序列化引用，后续迁移必须通过 Unity Editor/MCP 完成。
 
 ## 当前资产与兼容边界
 
