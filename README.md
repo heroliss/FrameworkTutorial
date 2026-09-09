@@ -1,6 +1,6 @@
 # SSFramework Tutorial
 
-这是 SSFramework 的独立章节教程工程，用于把框架 API、模块边界和接入流程放进可运行的教学场景中。它不包含 Outpost 或 NomadWorkshop 的运行时代码，也不承担正式游戏玩法。
+这是 SSFramework 的独立章节教程工程，用于把框架 API、模块边界和接入流程放进可运行的教学场景中。它不承担正式游戏玩法。
 
 仓库当前 GitHub 名称仍为 `FrameworkTutorial`；`SSFrameworkTutorial` 更能表达它与框架的关系，是建议的正式名称。仓库远端改名需要在 GitHub 设置中单独完成，当前本地目录、远端 URL 和 Unity 资产路径保持不变。
 
@@ -28,8 +28,6 @@ git submodule update --init --recursive
 
 Framework 升级必须提交新的子模块 gitlink，并运行受影响章节的编译、测试和运行验证。通用安装与升级规则见 [Framework 接入与升级说明](https://github.com/heroliss/SSFramework/blob/main/docs/consuming-framework.md)。
 
-## 相关仓库
+## 直接依赖
 
-- [SSFramework](https://github.com/heroliss/SSFramework)：被教程消费的框架包。
-- [Outpost](https://github.com/heroliss/Outpost)：独立教程游戏。
-- [NomadWorkshop](https://github.com/heroliss/NomadWorkshop)：独立开发中的正式游戏。
+- [SSFramework](https://github.com/heroliss/SSFramework)：本教程消费的框架包。
