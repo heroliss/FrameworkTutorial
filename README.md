@@ -26,7 +26,7 @@ git submodule update --init --recursive
 - `feature/chapter-*`：短期章节开发分支。
 - `vX.Y.Z`：教程版本标签。
 
-Framework 升级必须提交新的子模块 gitlink，并运行受影响章节的编译、测试和运行验证。完整的 SHA/tag 同步流程见 [SSFramework 仓库集成说明](https://github.com/heroliss/SSFramework/blob/main/docs/repository-integration.md)。
+Framework 升级必须提交新的子模块 gitlink，并运行受影响章节的编译、测试和运行验证。通用安装与升级规则见 [Framework 接入与升级说明](https://github.com/heroliss/SSFramework/blob/main/docs/consuming-framework.md)。
 
 ## 相关仓库
 
